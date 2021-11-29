@@ -25,4 +25,5 @@ public class App {
     public static ShipmentService getShipmentService() {
         return new ShipmentService(getPackagingDAO(), getCostStrategy());
     }
+    
 }
