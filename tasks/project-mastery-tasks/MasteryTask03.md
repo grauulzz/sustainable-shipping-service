@@ -59,7 +59,7 @@ relationships between them. Create a new file in the `src/resources` directory c
 add the plant uml source code to the file. 
 
 You can run the MT3DesignIntrospection test to ensure you've met the requirements for this design. Either directly or by
-running  `./gradlew -q clean :test --tests 'tct.MT3DesignIntrospection'`
+running  `./gradlew -q clean :test --tests 'tct.MT3DesignIntrospectionTests'`
 
 &nbsp;
 
