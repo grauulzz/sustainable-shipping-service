@@ -49,17 +49,17 @@ public class Packaging {
         return material;
     }
 
-    public BigDecimal getLength() {
-        return length;
-    }
+//    public BigDecimal getLength() {
+//        return length;
+//    }
 
-    public BigDecimal getWidth() {
-        return width;
-    }
+//    public BigDecimal getWidth() {
+//        return width;
+//    }
 
-    public BigDecimal getHeight() {
-        return height;
-    }
+//    public BigDecimal getHeight() {
+//        return height;
+//    }
 
     /**
      * Returns whether the given item will fit in this packaging.
@@ -111,6 +111,6 @@ public class Packaging {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getMaterial(), getLength(), getWidth(), getHeight());
+        return Objects.hash(getMaterial());
     }
 }
