@@ -6,5 +6,6 @@ package com.amazon.ata.types;
  * LAMINATED_PLASTIC
  */
 public enum Material {
-    CORRUGATE
+    CORRUGATE,
+    LAMINATED_PLASTIC
 }

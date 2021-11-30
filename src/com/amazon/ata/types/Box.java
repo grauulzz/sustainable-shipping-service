@@ -3,10 +3,12 @@ package com.amazon.ata.types;
 import java.math.BigDecimal;
 
 public class Box extends Packaging {
-    BigDecimal length;
-    BigDecimal width;
-    BigDecimal height;
-    BigDecimal volume;
+    private BigDecimal length;
+    private BigDecimal width;
+    private BigDecimal height;
+    private BigDecimal volume;
+    private Item item;
+    
     /**
      * Instantiates a new Packaging object.
      *
@@ -18,4 +20,6 @@ public class Box extends Packaging {
     public Box(Material material, BigDecimal length, BigDecimal width, BigDecimal height) {
         super(material, length, width, height);
     }
+    
+    
 }

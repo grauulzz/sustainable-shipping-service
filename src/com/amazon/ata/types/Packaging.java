@@ -34,9 +34,6 @@ public class Packaging {
     /**
      * Instantiates a new Packaging object.
      * @param material - the Material of the package
-     * @param length - the length of the package
-     * @param width - the width of the package
-     * @param height - the height of the package
      */
     public Packaging(Material material, BigDecimal length, BigDecimal width, BigDecimal height) {
         this.material = material;
@@ -44,22 +41,15 @@ public class Packaging {
         this.width = width;
         this.height = height;
     }
+    
+    public Packaging(Material material) {
+        this.material = material;
+    }
 
     public Material getMaterial() {
         return material;
     }
-
-//    public BigDecimal getLength() {
-//        return length;
-//    }
-
-//    public BigDecimal getWidth() {
-//        return width;
-//    }
-
-//    public BigDecimal getHeight() {
-//        return height;
-//    }
+    
 
     /**
      * Returns whether the given item will fit in this packaging.
@@ -87,30 +77,19 @@ public class Packaging {
 
         return endsArea.add(shortSidesArea).add(longSidesArea);
     }
-
+    
     @Override
     public boolean equals(Object o) {
-        // Can't be equal to null
-        if (o == null) {
-            return false;
-        }
-
-        // Referentially equal
-        if (this == o) {
-            return true;
-        }
-
-        // Check if it's a different type
-        if (getClass() != o.getClass()) {
-            return false;
-        }
-
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Packaging packaging = (Packaging) o;
-        return getMaterial() == packaging.getMaterial();
+        return getMaterial() == packaging.getMaterial() && Objects.equals(length, packaging.length) &&
+                Objects.equals(width, packaging.width) &&
+                Objects.equals(height, packaging.height);
     }
-
+    
     @Override
     public int hashCode() {
-        return Objects.hash(getMaterial());
+        return Objects.hash(getMaterial(), length, width, height);
     }
 }
