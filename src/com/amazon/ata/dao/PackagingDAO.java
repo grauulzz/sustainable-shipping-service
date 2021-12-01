@@ -26,7 +26,7 @@ public class PackagingDAO {
      * @param datastore Where to pull the data from for fulfillment center/packaging available mappings.
      */
     public PackagingDAO(PackagingDatastore datastore) {
-        this.fcPackagingOptions =  new ArrayList<>(datastore.getFcPackagingOptions());
+        this.fcPackagingOptions = new ArrayList<>(datastore.getFcPackagingOptions());
     }
 
     /**

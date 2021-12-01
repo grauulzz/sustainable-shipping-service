@@ -21,5 +21,4 @@ public class Box extends Packaging {
         super(material, length, width, height);
     }
     
-    
 }
