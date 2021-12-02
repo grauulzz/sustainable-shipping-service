@@ -9,8 +9,7 @@ import com.amazon.ata.types.Item;
 import com.amazon.ata.types.Packaging;
 import com.amazon.ata.types.ShipmentOption;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Access data for which packaging is available at which fulfillment center.
@@ -19,7 +18,20 @@ public class PackagingDAO {
     /**
      * A list of fulfillment centers with a packaging options they provide.
      */
-    private List<FcPackagingOption> fcPackagingOptions;
+    private Map<FulfillmentCenter, Set<Packaging>> fcpmap = Map.of();
+    private final List<FcPackagingOption> fcPackagingOptions;
+    private static final Set<Packaging> pset = new HashSet<>();
+    
+    public static void addPackaging(Packaging packaging) {
+        boolean isAdded = pset.add(packaging);
+        System.out.println(isAdded + " " + packaging.toString());
+    }
+    
+    public Map<FulfillmentCenter, Set<Packaging>> makeFccpMap(Set<Packaging> pset) {
+        fcpmap = new HashMap<>();
+        fcPackagingOptions.forEach(p -> fcpmap.putIfAbsent(p.getFulfillmentCenter(), pset));
+        return fcpmap;
+    }
 
     /**
      * Instantiates a PackagingDAO object.
@@ -27,6 +39,10 @@ public class PackagingDAO {
      */
     public PackagingDAO(PackagingDatastore datastore) {
         this.fcPackagingOptions = new ArrayList<>(datastore.getFcPackagingOptions());
+        fcPackagingOptions.forEach(fcPackagingOption -> addPackaging(fcPackagingOption.getPackaging()));
+        makeFccpMap(pset);
+        
+        fcpmap.forEach((k, v) -> System.out.printf("key: %s, value: %s%n", k, v));
     }
 
     /**
@@ -74,5 +90,10 @@ public class PackagingDAO {
         }
 
         return result;
+    }
+    
+    public static void main(String[] args) {
+        PackagingDatastore p = new PackagingDatastore();
+        new PackagingDAO(p);
     }
 }

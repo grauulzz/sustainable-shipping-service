@@ -83,7 +83,8 @@ public class Packaging {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Packaging packaging = (Packaging) o;
-        return getMaterial() == packaging.getMaterial() && Objects.equals(length, packaging.length) &&
+        return getMaterial() == packaging.getMaterial() &&
+                Objects.equals(length, packaging.length) &&
                 Objects.equals(width, packaging.width) &&
                 Objects.equals(height, packaging.height);
     }
