@@ -79,7 +79,18 @@ public class Packaging {
         return endsArea.add(shortSidesArea).add(longSidesArea);
     }
     
-
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Packaging packaging = (Packaging) o;
+        return length.equals(packaging.length) && width.equals(packaging.width) && height.equals(packaging.height);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(length, width, height);
+    }
     
     @Override
     public String toString() {
