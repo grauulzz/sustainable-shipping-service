@@ -10,6 +10,7 @@ import com.amazon.ata.types.Packaging;
 import com.amazon.ata.types.ShipmentOption;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Access data for which packaging is available at which fulfillment center.
@@ -18,22 +19,20 @@ public class PackagingDAO {
     /**
      * A list of fulfillment centers with a packaging options they provide.
      */
-    private final List<FcPackagingOption> fcPackagingOptions;
+    private final Set<FcPackagingOption> fcPackagingOptions;
     private final Map<FulfillmentCenter, Set<Packaging>> fulfillmentCenterSetMap;
     
-
     /**
      * Instantiates a PackagingDAO object.
      * @param datastore Where to pull the data from for fulfillment center/packaging available mappings.
      */
     public PackagingDAO(PackagingDatastore datastore) {
-        this.fcPackagingOptions = new ArrayList<>(datastore.getFcPackagingOptions());
-        
+        this.fcPackagingOptions =  new HashSet<>(datastore.getFcPackagingOptions());
         this.fulfillmentCenterSetMap = new HashMap<>();
         
-        fcPackagingOptions.forEach(f -> fulfillmentCenterSetMap
-                .computeIfAbsent(f.getFulfillmentCenter(), k -> new HashSet<>())
-                .add(f.getPackaging()));
+        fcPackagingOptions.forEach(k -> fulfillmentCenterSetMap
+                .computeIfAbsent(k.getFulfillmentCenter(), v -> new HashSet<>())
+                .add(k.getPackaging()));
         
         fulfillmentCenterSetMap.forEach((k, v) -> System.out.printf("key: %s, value: %s%n", k, v));
     }
@@ -85,8 +84,9 @@ public class PackagingDAO {
         return result;
     }
     
-    public static void main(String[] args) {
-        PackagingDatastore p = new PackagingDatastore();
-        new PackagingDAO(p);
-    }
+//    public static void main(String[] args) {
+//        PackagingDatastore p = new PackagingDatastore();
+//        new PackagingDAO(p);
+//    }
+//
 }
