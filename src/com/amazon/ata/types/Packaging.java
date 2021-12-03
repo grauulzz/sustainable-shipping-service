@@ -2,6 +2,7 @@ package com.amazon.ata.types;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Represents a packaging option.
@@ -78,19 +79,15 @@ public class Packaging {
         return endsArea.add(shortSidesArea).add(longSidesArea);
     }
     
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Packaging packaging = (Packaging) o;
-        return getMaterial() == packaging.getMaterial() &&
-                Objects.equals(length, packaging.length) &&
-                Objects.equals(width, packaging.width) &&
-                Objects.equals(height, packaging.height);
-    }
+
     
     @Override
-    public int hashCode() {
-        return Objects.hash(getMaterial(), length, width, height);
+    public String toString() {
+        return "Packaging{" +
+                "material=" + material +
+                ", length=" + length +
+                ", width=" + width +
+                ", height=" + height +
+                '}';
     }
 }

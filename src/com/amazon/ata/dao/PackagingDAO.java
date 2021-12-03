@@ -18,20 +18,9 @@ public class PackagingDAO {
     /**
      * A list of fulfillment centers with a packaging options they provide.
      */
-    private Map<FulfillmentCenter, Set<Packaging>> fcpmap = Map.of();
     private final List<FcPackagingOption> fcPackagingOptions;
-    private static final Set<Packaging> pset = new HashSet<>();
+    private final Map<FulfillmentCenter, Set<Packaging>> fulfillmentCenterSetMap;
     
-    public static void addPackaging(Packaging packaging) {
-        boolean isAdded = pset.add(packaging);
-        System.out.println(isAdded + " " + packaging.toString());
-    }
-    
-    public Map<FulfillmentCenter, Set<Packaging>> makeFccpMap(Set<Packaging> pset) {
-        fcpmap = new HashMap<>();
-        fcPackagingOptions.forEach(p -> fcpmap.putIfAbsent(p.getFulfillmentCenter(), pset));
-        return fcpmap;
-    }
 
     /**
      * Instantiates a PackagingDAO object.
@@ -39,10 +28,14 @@ public class PackagingDAO {
      */
     public PackagingDAO(PackagingDatastore datastore) {
         this.fcPackagingOptions = new ArrayList<>(datastore.getFcPackagingOptions());
-        fcPackagingOptions.forEach(fcPackagingOption -> addPackaging(fcPackagingOption.getPackaging()));
-        makeFccpMap(pset);
         
-        fcpmap.forEach((k, v) -> System.out.printf("key: %s, value: %s%n", k, v));
+        this.fulfillmentCenterSetMap = new HashMap<>();
+        
+        fcPackagingOptions.forEach(f -> fulfillmentCenterSetMap
+                .computeIfAbsent(f.getFulfillmentCenter(), k -> new HashSet<>())
+                .add(f.getPackaging()));
+        
+        fulfillmentCenterSetMap.forEach((k, v) -> System.out.printf("key: %s, value: %s%n", k, v));
     }
 
     /**

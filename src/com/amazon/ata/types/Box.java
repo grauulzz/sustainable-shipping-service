@@ -7,7 +7,7 @@ public class Box extends Packaging {
     private BigDecimal width;
     private BigDecimal height;
     private BigDecimal volume;
-    private Item item;
+    
     
     /**
      * Instantiates a new Packaging object.
