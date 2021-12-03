@@ -34,7 +34,7 @@ public class PackagingDAO {
                 .computeIfAbsent(k.getFulfillmentCenter(), v -> new HashSet<>())
                 .add(k.getPackaging()));
         
-        fulfillmentCenterSetMap.forEach((k, v) -> System.out.printf("key: %s, value: %s%n", k, v));
+//        fulfillmentCenterSetMap.forEach((k, v) -> System.out.printf("key: %s, value: %s%n", k, v));
     }
 
     /**
