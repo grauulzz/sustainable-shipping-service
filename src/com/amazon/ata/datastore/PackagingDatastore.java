@@ -6,13 +6,14 @@ import com.amazon.ata.types.Material;
 import com.amazon.ata.types.Packaging;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Stores all configured packaging pairs for all fulfillment centers.
  */
 public class PackagingDatastore {
-
+    
     /**
      * The stored pairs of fulfillment centers to the packaging options they support.
      */
@@ -38,10 +39,10 @@ public class PackagingDatastore {
         FulfillmentCenter fulfillmentCenter = new FulfillmentCenter(fcCode);
         Packaging packaging = new Packaging(material, new BigDecimal(length), new BigDecimal(width),
                 new BigDecimal(height));
-
+        
         return new FcPackagingOption(fulfillmentCenter, packaging);
     }
-
+    
     public List<FcPackagingOption> getFcPackagingOptions() {
         return fcPackagingOptions;
     }

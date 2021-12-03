@@ -2,6 +2,9 @@ package com.amazon.ata.types;
 
 import java.math.BigDecimal;
 
+/**
+ * The type Poly bag.
+ */
 public class PolyBag extends Packaging {
     private BigDecimal length;
     private BigDecimal width;
@@ -9,12 +12,12 @@ public class PolyBag extends Packaging {
     private BigDecimal volume;
     
     /**
-     * Instantiates a new Packaging object.
+     * Instantiates a new Poly bag.
      *
-     * @param material - the Material of the package
-     * @param length   - the length of the package
-     * @param width    - the width of the package
-     * @param height   - the height of the package
+     * @param material the material
+     * @param length   the length
+     * @param width    the width
+     * @param height   the height
      */
     public PolyBag(Material material, BigDecimal length, BigDecimal width, BigDecimal height) {
         super(material);
@@ -72,28 +75,4 @@ public class PolyBag extends Packaging {
         this.volume = volume;
     }
     
-    @Override
-    public String toString() {
-        return "PolyBag{" +
-                "length=" + length +
-                ", width=" + width +
-                ", height=" + height +
-                ", volume=" + volume +
-                "} " + super.toString();
-    }
-    
-    
-//    public static void main(String[] args) {
-//        PolyBag p1 = new PolyBag(Material.LAMINATED_PLASTIC, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN);
-//
-//        BigDecimal vol = p1.volume(p1.length, p1.width, p1.height);
-//        p1.setVolume(vol);
-//
-//        Item i = Item.builder().withWidth(BigDecimal.ONE).withHeight(BigDecimal.ONE).withLength(BigDecimal.ONE).build();
-//
-//        System.out.println(i);
-//        System.out.println(p1.canFitItem(i));
-//        System.out.println(p1.getMass());
-//
-//    }
 }

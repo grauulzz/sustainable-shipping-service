@@ -2,11 +2,10 @@ package com.amazon.ata.types;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Represents a packaging option.
- *
+ * <p>
  * This packaging supports standard boxes, having a length, width, and height.
  * Items can fit in the packaging so long as their dimensions are all smaller than
  * the packaging's dimensions.
@@ -31,10 +30,14 @@ public class Packaging {
      * This packaging's largest dimension.
      */
     private BigDecimal height;
-
+    
     /**
      * Instantiates a new Packaging object.
+     *
      * @param material - the Material of the package
+     * @param length   the length
+     * @param width    the width
+     * @param height   the height
      */
     public Packaging(Material material, BigDecimal length, BigDecimal width, BigDecimal height) {
         this.material = material;
@@ -43,15 +46,25 @@ public class Packaging {
         this.height = height;
     }
     
+    /**
+     * Instantiates a new Packaging.
+     *
+     * @param material the material
+     */
     public Packaging(Material material) {
         this.material = material;
     }
-
+    
+    /**
+     * Gets material.
+     *
+     * @return the material
+     */
     public Material getMaterial() {
         return material;
     }
     
-
+    
     /**
      * Returns whether the given item will fit in this packaging.
      *
@@ -63,9 +76,10 @@ public class Packaging {
                 this.width.compareTo(item.getWidth()) > 0 &&
                 this.height.compareTo(item.getHeight()) > 0;
     }
-
+    
     /**
      * Returns the mass of the packaging in grams. The packaging weighs 1 gram per square centimeter.
+     *
      * @return the mass of the packaging
      */
     public BigDecimal getMass() {

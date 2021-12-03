@@ -9,8 +9,13 @@ import com.amazon.ata.types.Item;
 import com.amazon.ata.types.Packaging;
 import com.amazon.ata.types.ShipmentOption;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 
 /**
  * Access data for which packaging is available at which fulfillment center.
@@ -33,8 +38,6 @@ public class PackagingDAO {
         fcPackagingOptions.forEach(k -> fulfillmentCenterSetMap
                 .computeIfAbsent(k.getFulfillmentCenter(), v -> new HashSet<>())
                 .add(k.getPackaging()));
-        
-//        fulfillmentCenterSetMap.forEach((k, v) -> System.out.printf("key: %s, value: %s%n", k, v));
     }
 
     /**
@@ -83,10 +86,4 @@ public class PackagingDAO {
 
         return result;
     }
-    
-//    public static void main(String[] args) {
-//        PackagingDatastore p = new PackagingDatastore();
-//        new PackagingDAO(p);
-//    }
-//
 }

@@ -87,3 +87,5 @@ cypress/videos
 /tests/e2e/videos/
 /tests/e2e/screenshots/
 
+!/Test Results - Tests_in_'SustainabilityShipmentService_test'.html
+/Test Results - Tests_in_'SustainabilityShipmentService_test'.html
