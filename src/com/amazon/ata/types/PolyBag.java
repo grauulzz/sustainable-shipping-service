@@ -83,17 +83,17 @@ public class PolyBag extends Packaging {
     }
     
     
-    public static void main(String[] args) {
-        PolyBag p1 = new PolyBag(Material.LAMINATED_PLASTIC, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN);
-        
-        BigDecimal vol = p1.volume(p1.length, p1.width, p1.height);
-        p1.setVolume(vol);
-    
-        Item i = Item.builder().withWidth(BigDecimal.ONE).withHeight(BigDecimal.ONE).withLength(BigDecimal.ONE).build();
-    
-        System.out.println(i);
-        System.out.println(p1.canFitItem(i));
-        System.out.println(p1.getMass());
-        
-    }
+//    public static void main(String[] args) {
+//        PolyBag p1 = new PolyBag(Material.LAMINATED_PLASTIC, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN);
+//
+//        BigDecimal vol = p1.volume(p1.length, p1.width, p1.height);
+//        p1.setVolume(vol);
+//
+//        Item i = Item.builder().withWidth(BigDecimal.ONE).withHeight(BigDecimal.ONE).withLength(BigDecimal.ONE).build();
+//
+//        System.out.println(i);
+//        System.out.println(p1.canFitItem(i));
+//        System.out.println(p1.getMass());
+//
+//    }
 }
