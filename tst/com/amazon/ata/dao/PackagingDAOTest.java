@@ -5,11 +5,17 @@ import com.amazon.ata.exceptions.NoPackagingFitsItemException;
 import com.amazon.ata.exceptions.UnknownFulfillmentCenterException;
 import com.amazon.ata.types.FulfillmentCenter;
 import com.amazon.ata.types.Item;
+import com.amazon.ata.types.Packaging;
 import com.amazon.ata.types.ShipmentOption;
+import org.apache.logging.log4j.core.util.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BooleanSupplier;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,6 +32,21 @@ class PackagingDAOTest {
     private PackagingDatastore datastore = new PackagingDatastore();
 
     private PackagingDAO packagingDAO;
+    
+    @Test
+    public void whenAddingFulfillmentCenterAsKeyInMap_CheckForDuplicateKeys_returnsFalse() {
+    
+        packagingDAO = new PackagingDAO(datastore);
+    
+        Map<FulfillmentCenter, Set<Packaging>> setMap = packagingDAO.getSetMap();
+        Iterator<FulfillmentCenter> iterator = setMap.keySet().iterator();
+        
+        setMap.forEach((k, v) -> {
+            boolean dupe = k.getFcCode().equals(iterator.next().toString());
+            Assertions.assertFalse(dupe);
+        });
+        
+    }
 
     @Test
     public void findShipmentOptions_unknownFulfillmentCenter_throwsUnknownFulfillmentCenterException() {

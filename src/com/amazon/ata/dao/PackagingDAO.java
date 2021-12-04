@@ -24,18 +24,29 @@ public class PackagingDAO {
     /**
      * A list of fulfillment centers with a packaging options they provide.
      */
-    private final Set<FcPackagingOption> fcPackagingOptions;
-    private final Map<FulfillmentCenter, Set<Packaging>> fulfillmentCenterSetMap;
+    private final List<FcPackagingOption> fcPackagingOptions;
+    private final Set<FcPackagingOption> set;
+    private final Map<FulfillmentCenter, Set<Packaging>> setMap;
+    
+    public void add(FcPackagingOption p) {
+        this.set.add(p);
+    }
     
     /**
      * Instantiates a PackagingDAO object.
      * @param datastore Where to pull the data from for fulfillment center/packaging available mappings.
      */
     public PackagingDAO(PackagingDatastore datastore) {
-        this.fcPackagingOptions =  new HashSet<>(datastore.getFcPackagingOptions());
-        this.fulfillmentCenterSetMap = new HashMap<>();
+        // this does everything below adding to a set in one line,
+        // this.fcPackagingOptions =  new HashSet<>(datastore.getFcPackagingOptions());
+        // but the readme says explicitly to iterate through each value in list and add it to a set so idk
         
-        fcPackagingOptions.forEach(k -> fulfillmentCenterSetMap
+        this.fcPackagingOptions =  new ArrayList<>(datastore.getFcPackagingOptions());
+        this.set = new HashSet<>();
+        this.setMap = new HashMap<>();
+        this.fcPackagingOptions.forEach(this::add);
+    
+        set.forEach(k -> setMap
                 .computeIfAbsent(k.getFulfillmentCenter(), v -> new HashSet<>())
                 .add(k.getPackaging()));
     }
@@ -57,7 +68,7 @@ public class PackagingDAO {
         // Check all FcPackagingOptions for a suitable Packaging in the given FulfillmentCenter
         List<ShipmentOption> result = new ArrayList<>();
         boolean fcFound = false;
-        for (FcPackagingOption fcPackagingOption : fcPackagingOptions) {
+        for (FcPackagingOption fcPackagingOption : set) {
             Packaging packaging = fcPackagingOption.getPackaging();
             String fcCode = fcPackagingOption.getFulfillmentCenter().getFcCode();
 
@@ -85,5 +96,13 @@ public class PackagingDAO {
         }
 
         return result;
+    }
+    
+    public Set<FcPackagingOption> getSet() {
+        return set;
+    }
+    
+    public Map<FulfillmentCenter, Set<Packaging>> getSetMap() {
+        return setMap;
     }
 }

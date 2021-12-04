@@ -83,6 +83,7 @@ dependencies {
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.10.0'
 
     implementation files("$rootDir/LibrariesAndUtilities/ATAResources.jar")
+//    testImplementation files("$rootDir/LibrariesAndUtilities/ATAResources.jar")
     implementation project('LibrariesAndUtilities:LessonPlanResources')
     implementation project('LibrariesAndUtilities:ATACurriculumTestInfrastructure')
     implementation project('LibrariesAndUtilities:ATACurriculumSustainabilityShipmentServiceIntrospectionTests')
