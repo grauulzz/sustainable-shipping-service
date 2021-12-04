@@ -9,7 +9,9 @@ import com.amazon.ata.types.Item;
 import com.amazon.ata.types.Packaging;
 import com.amazon.ata.types.ShipmentOption;
 
+import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -25,6 +27,15 @@ public class PackagingDAO {
     
     public void add(FcPackagingOption p) {
         this.set.add(p);
+    }
+    
+    // just messing around
+    public List<Set<Packaging>> removeEntryOfPredicate(FulfillmentCenter f) {
+        return setMap.entrySet()
+                .stream()
+                .filter(e -> setMap.containsKey(f))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
     }
     
     /**
@@ -59,6 +70,8 @@ public class PackagingDAO {
      */
     public List<ShipmentOption> findShipmentOptions(Item item, FulfillmentCenter fulfillmentCenter)
             throws UnknownFulfillmentCenterException, NoPackagingFitsItemException {
+    
+//        boolean fcFound = setMap.containsKey(fulfillmentCenter);
 
         // Check all FcPackagingOptions for a suitable Packaging in the given FulfillmentCenter
         List<ShipmentOption> result = new ArrayList<>();
@@ -113,4 +126,27 @@ public class PackagingDAO {
     public int hashCode() {
         return Objects.hash(getSet(), getSetMap());
     }
+    
+//    public static void main(String[] args) throws UnknownFulfillmentCenterException, NoPackagingFitsItemException {
+//
+//        PackagingDatastore p = new PackagingDatastore();
+//        PackagingDAO dao = new PackagingDAO(p);
+//        FulfillmentCenter f = new FulfillmentCenter("IND1");
+//
+//        Item i = Item.builder()
+//                .withAsin("234234")
+//                .withDescription("pork")
+//                .withLength(BigDecimal.ONE)
+//                .withHeight(BigDecimal.ONE)
+//                .withWidth(BigDecimal.ONE)
+//                .build();
+//
+//        dao.findShipmentOptions(i, f);
+//
+//
+//        List<Set<Packaging>> lsp = dao.removeEntryOfPredicate(f);
+//
+//        lsp.forEach(System.out::print);
+//
+//    }
 }
