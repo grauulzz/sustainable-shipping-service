@@ -6,10 +6,6 @@ import java.util.Objects;
 public class PrepareShipmentRequest {
     
     /**
-     * Represents a request sent to app for packaging information.
-     */
-    
-    /**
      * The item's unique identifier - asing - (Amazon Standard Identification Number - 10 alphanumeric characters).
      */
     private String asin;
@@ -83,7 +79,7 @@ public class PrepareShipmentRequest {
         this.length = builder.length;
         this.width = builder.width;
         this.height = builder.height;
-        this.fcCode = builder.fcCode;
+        this.fcCode = builder.innerFcCode;
     }
     
     public String getAsin() {
@@ -185,7 +181,7 @@ public class PrepareShipmentRequest {
         private BigDecimal length;
         private BigDecimal width;
         private BigDecimal height;
-        private String fcCode;
+        private String innerFcCode;
         
         private Builder() {
         }
@@ -253,7 +249,7 @@ public class PrepareShipmentRequest {
          * @return a reference to this Builder
          */
         public Builder withFcCode(String fcCode) {
-            this.fcCode = fcCode;
+            this.innerFcCode = fcCode;
             return this;
         }
         
