@@ -3,18 +3,12 @@ package com.amazon.ata.dao;
 import com.amazon.ata.datastore.PackagingDatastore;
 import com.amazon.ata.exceptions.NoPackagingFitsItemException;
 import com.amazon.ata.exceptions.UnknownFulfillmentCenterException;
-import com.amazon.ata.types.FulfillmentCenter;
-import com.amazon.ata.types.Item;
-import com.amazon.ata.types.Packaging;
-import com.amazon.ata.types.ShipmentOption;
-import org.apache.logging.log4j.core.util.Assert;
+import com.amazon.ata.types.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BooleanSupplier;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,17 +22,118 @@ class PackagingDAOTest {
     private FulfillmentCenter ind1 = new FulfillmentCenter("IND1");
     private FulfillmentCenter abe2 = new FulfillmentCenter("ABE2");
     private FulfillmentCenter iad2 = new FulfillmentCenter("IAD2");
-
+    
+    
+    FcPackagingOption p1 = new FcPackagingOption(ind1, new Packaging(Material.CORRUGATE,
+            BigDecimal.ONE,  BigDecimal.ONE,  BigDecimal.ONE));
+    
+    FcPackagingOption p2 = new FcPackagingOption(abe2, new Packaging(Material.CORRUGATE,
+            BigDecimal.ONE,  BigDecimal.ONE,  BigDecimal.ONE));
+    
+    FcPackagingOption p3 = new FcPackagingOption(abe2, new Packaging(Material.CORRUGATE,
+            BigDecimal.TEN,  BigDecimal.TEN,  BigDecimal.TEN));
+    
+    Packaging sameDimensions = p1.getPackaging();
+    Packaging diffDimensions = p3.getPackaging();
+    
+    
     private PackagingDatastore datastore = new PackagingDatastore();
-
     private PackagingDAO packagingDAO;
     
+    Map<FulfillmentCenter, Set<Packaging>> setMap;
+    Map<FulfillmentCenter, Set<Packaging>> setMap2;
+    
+    Set<Packaging> packingSet1;
+    Set<Packaging> packageSet2;
+    Set<FcPackagingOption> fcpoSet;
+    
+
+    
     @Test
-    public void whenAddingFulfillmentCenterAsKeyInMap_CheckForDuplicateKeys_returnsFalse() {
+    public void whenHashCodeIsCalledOnPackaging_withDiffDimensions_thenDiffHashcode() {
+        // GIVEN
+
+        // WHEN + THEN
+        Assertions.assertNotEquals(sameDimensions.hashCode(), diffDimensions.hashCode());
+    }
     
+    @Test
+    public void testAddMethodOfSet_withDifferentDimensions_returnTrue() {
+        // WHEN
+        fcpoSet = new HashSet<>();
+
+        // GIVEN
+        fcpoSet.add(p1);
+        fcpoSet.add(p2);
+        
+        //THEN
+        assertEquals(fcpoSet.size(), 2);
+    }
+    
+    @Test
+    public void whenAddingToASet_oneSetCanAcceptMultiplePackagingDimensions_returnTrue() {
+        // GIVEN
+        packingSet1 = new HashSet<>();
+        packingSet1.add(sameDimensions);
+        packingSet1.add(diffDimensions);
+        
+        var ref = new Object() {
+            int count = 0;
+        };
+        
+        packingSet1.forEach(packaging -> {
+            if (packaging != null) {
+                ref.count++;
+            }
+        });
+        
+        // WHEN + THEN
+        Assertions.assertEquals(ref.count, packingSet1.size());
+    }
+    
+    
+    @Test
+    public void whenAddingSamePackagingDimensions_withSameFulfillmentCenter_returnsNoDuplicateKeys() {
+        // GIVEN
+        packingSet1 = new HashSet<>();
+        packageSet2 = new HashSet<>();
+        setMap = new HashMap<>();
+
+        // WHEN
+        packingSet1.add(sameDimensions);
+        packageSet2.add(sameDimensions);
+        setMap.put(ind1, new HashSet<>(packingSet1));
+        setMap.put(ind1, new HashSet<>(packingSet1));
+        
+        // THEN
+        Assertions.assertEquals(1, setMap.size());
+    }
+    
+    
+    @Test
+    public void whenAddingDiffPackagingDimensions_withSameFulfillmentCenter_returnsTwoMapEntries() {
+        // GIVEN
+        packingSet1 = new HashSet<>();
+        packageSet2 = new HashSet<>();
+        setMap = new HashMap<>();
+        
+        // WHEN
+        packingSet1.add(sameDimensions);
+        packageSet2.add(diffDimensions);
+        setMap.put(ind1, new HashSet<>(packingSet1));
+        setMap.put(ind1, new HashSet<>(packageSet2));
+        
+        // THEN
+        Assertions.assertEquals(2, setMap.size());
+    }
+    
+    @Test
+    public void whenAddingFulfillmentCenterAsKeyInMap_CheckForDuplicateKeysByNextKeyOfMap_returnsFalse() {
+        
         packagingDAO = new PackagingDAO(datastore);
-    
-        Map<FulfillmentCenter, Set<Packaging>> setMap = packagingDAO.getSetMap();
+        setMap = packagingDAO.getSetMap();
+        
+        
         Iterator<FulfillmentCenter> iterator = setMap.keySet().iterator();
         
         setMap.forEach((k, v) -> {
@@ -47,6 +142,21 @@ class PackagingDAOTest {
         });
         
     }
+    
+    @Test
+    public void whenPutIsCalled_withDifFulfillmentCenterAndSamePackagingDimensions_thenMapReturnsDiffHashcode() {
+        // GIVEN
+        setMap = new HashMap<>();
+        setMap2 = new HashMap<>();
+        
+        // WHEN
+        setMap.put(p1.getFulfillmentCenter(), new HashSet<>(Collections.singleton(p1.getPackaging())));
+        setMap2.put(p2.getFulfillmentCenter(), new HashSet<>(Collections.singleton(p1.getPackaging())));
+        
+        // THEN
+        Assertions.assertNotEquals(setMap.hashCode(), setMap2.hashCode());
+    }
+    
 
     @Test
     public void findShipmentOptions_unknownFulfillmentCenter_throwsUnknownFulfillmentCenterException() {

@@ -9,12 +9,7 @@ import com.amazon.ata.types.Item;
 import com.amazon.ata.types.Packaging;
 import com.amazon.ata.types.ShipmentOption;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -104,5 +99,18 @@ public class PackagingDAO {
     
     public Map<FulfillmentCenter, Set<Packaging>> getSetMap() {
         return setMap;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PackagingDAO dao = (PackagingDAO) o;
+        return getSet().equals(dao.getSet()) && getSetMap().equals(dao.getSetMap());
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSet(), getSetMap());
     }
 }
