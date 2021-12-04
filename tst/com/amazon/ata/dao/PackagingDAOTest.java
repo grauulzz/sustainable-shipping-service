@@ -27,7 +27,7 @@ class PackagingDAOTest {
     FcPackagingOption p1 = new FcPackagingOption(ind1, new Packaging(Material.CORRUGATE,
             BigDecimal.ONE,  BigDecimal.ONE,  BigDecimal.ONE));
     
-    FcPackagingOption p2 = new FcPackagingOption(abe2, new Packaging(Material.CORRUGATE,
+    FcPackagingOption p2 = new FcPackagingOption(iad2, new Packaging(Material.CORRUGATE,
             BigDecimal.ONE,  BigDecimal.ONE,  BigDecimal.ONE));
     
     FcPackagingOption p3 = new FcPackagingOption(abe2, new Packaging(Material.CORRUGATE,
@@ -37,94 +37,114 @@ class PackagingDAOTest {
     Packaging diffDimensions = p3.getPackaging();
     
     
-    private PackagingDatastore datastore = new PackagingDatastore();
+    private final PackagingDatastore datastore = new PackagingDatastore();
     private PackagingDAO packagingDAO;
     
     Map<FulfillmentCenter, Set<Packaging>> setMap;
     Map<FulfillmentCenter, Set<Packaging>> setMap2;
-    
-    Set<Packaging> packingSet1;
-    Set<Packaging> packageSet2;
-    Set<FcPackagingOption> fcpoSet;
+
     
 
     
     @Test
     public void whenHashCodeIsCalledOnPackaging_withDiffDimensions_thenDiffHashcode() {
-        // GIVEN
-
-        // WHEN + THEN
+        // GIVEN + WHEN + THEN
         Assertions.assertNotEquals(sameDimensions.hashCode(), diffDimensions.hashCode());
     }
     
     @Test
-    public void testAddMethodOfSet_withDifferentDimensions_returnTrue() {
-        // WHEN
-        fcpoSet = new HashSet<>();
-
-        // GIVEN
-        fcpoSet.add(p1);
-        fcpoSet.add(p2);
-        
-        //THEN
-        assertEquals(fcpoSet.size(), 2);
+    public void whenHashCodeIsCalledOnPackaging_withSameDimensions_thenSameHashcode() {
+        // GIVEN + WHEN + THEN
+        Assertions.assertEquals(sameDimensions.hashCode(), sameDimensions.hashCode());
     }
     
     @Test
-    public void whenAddingToASet_oneSetCanAcceptMultiplePackagingDimensions_returnTrue() {
+    public void testAddMethodOfSet_withDifferentDimensions_acceptsAddingElements() {
+        // WHEN
+        Set<FcPackagingOption> packagingSet = new HashSet<>();
+
         // GIVEN
-        packingSet1 = new HashSet<>();
-        packingSet1.add(sameDimensions);
-        packingSet1.add(diffDimensions);
+        packagingSet.add(p1);
+        packagingSet.add(p2);
         
+        //THEN
+        assertEquals(packagingSet.size(), 2);
+    }
+    
+    @Test
+    public void testAddMethodOfSet_withSameDimensions_rejectsAddingElements() {
+        // WHEN
+        Set<FcPackagingOption> packagingSet = new HashSet<>();
+
+        // GIVEN
+        packagingSet.add(p1);
+        packagingSet.add(p1);
+        
+        //THEN
+        assertEquals(packagingSet.size(), 1);
+    }
+    
+    @Test
+    public void whenAddingToASet_setCanAcceptAnArbitraryNumberOfAddToSet_returnTrue() {
+        // GIVEN
+        Set<Packaging> packageSet1 = new HashSet<>();
+        Random random = new Random();
+        int value = random.nextInt(5);
+    
+        // WHEN
+        for (int i = 0; i < value; i++) {
+            packageSet1.add(sameDimensions);
+            packageSet1.add(diffDimensions);
+        }
         var ref = new Object() {
             int count = 0;
         };
-        
-        packingSet1.forEach(packaging -> {
+        packageSet1.forEach(packaging -> {
             if (packaging != null) {
                 ref.count++;
             }
         });
         
-        // WHEN + THEN
-        Assertions.assertEquals(ref.count, packingSet1.size());
+        // THEN
+        Assertions.assertEquals(ref.count, packageSet1.size());
+    }
+    
+    @Test
+    public void whenAddingDiffPackagingDimensions_withSameFulfillmentCenter_returnsTwoDiffMapEntries() {
+        // GIVEN
+        Set<FcPackagingOption> singlePackingSet1 = new HashSet<>(Collections.singleton(p1));
+        Set<FcPackagingOption> singlePackingSet2 = new HashSet<>(Collections.singleton(p2));
+        setMap = new HashMap<>();
+        
+        // WHEN
+        singlePackingSet1.forEach(k -> setMap
+                .computeIfAbsent(k.getFulfillmentCenter(), v -> new HashSet<>())
+                .add(k.getPackaging()));
+        
+        singlePackingSet2.forEach(k -> setMap
+                .computeIfAbsent(k.getFulfillmentCenter(), v -> new HashSet<>())
+                .add(k.getPackaging()));
+        
+        // THEN
+        Assertions.assertEquals(2, setMap.size());
     }
     
     
     @Test
     public void whenAddingSamePackagingDimensions_withSameFulfillmentCenter_returnsNoDuplicateKeys() {
         // GIVEN
-        packingSet1 = new HashSet<>();
-        packageSet2 = new HashSet<>();
         setMap = new HashMap<>();
+        Set<Packaging> packageSet1 = new HashSet<>();
+        Set<Packaging> packageSet2 = new HashSet<>();
 
         // WHEN
-        packingSet1.add(sameDimensions);
+        packageSet1.add(sameDimensions);
         packageSet2.add(sameDimensions);
-        setMap.put(ind1, new HashSet<>(packingSet1));
-        setMap.put(ind1, new HashSet<>(packingSet1));
-        
-        // THEN
-        Assertions.assertEquals(1, setMap.size());
-    }
-    
-    
-    @Test
-    public void whenAddingDiffPackagingDimensions_withSameFulfillmentCenter_returnsTwoMapEntries() {
-        // GIVEN
-        packingSet1 = new HashSet<>();
-        packageSet2 = new HashSet<>();
-        setMap = new HashMap<>();
-        
-        // WHEN
-        packingSet1.add(sameDimensions);
-        packageSet2.add(diffDimensions);
-        setMap.put(ind1, new HashSet<>(packingSet1));
+        setMap.put(ind1, new HashSet<>(packageSet1));
         setMap.put(ind1, new HashSet<>(packageSet2));
         
         // THEN
-        Assertions.assertEquals(2, setMap.size());
+        Assertions.assertEquals(1, setMap.size());
     }
     
     @Test
@@ -132,7 +152,6 @@ class PackagingDAOTest {
         
         packagingDAO = new PackagingDAO(datastore);
         setMap = packagingDAO.getSetMap();
-        
         
         Iterator<FulfillmentCenter> iterator = setMap.keySet().iterator();
         

@@ -3,11 +3,7 @@ package com.amazon.ata.dao;
 import com.amazon.ata.datastore.PackagingDatastore;
 import com.amazon.ata.exceptions.NoPackagingFitsItemException;
 import com.amazon.ata.exceptions.UnknownFulfillmentCenterException;
-import com.amazon.ata.types.FcPackagingOption;
-import com.amazon.ata.types.FulfillmentCenter;
-import com.amazon.ata.types.Item;
-import com.amazon.ata.types.Packaging;
-import com.amazon.ata.types.ShipmentOption;
+import com.amazon.ata.types.*;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -21,12 +17,11 @@ public class PackagingDAO {
     /**
      * A list of fulfillment centers with a packaging options they provide.
      */
-    private final List<FcPackagingOption> fcPackagingOptions;
-    private final Set<FcPackagingOption> set;
+    private final Set<FcPackagingOption> packagingOptionsSet;
     private final Map<FulfillmentCenter, Set<Packaging>> setMap;
     
     public void add(FcPackagingOption p) {
-        this.set.add(p);
+        this.packagingOptionsSet.add(p);
     }
     
     // just messing around
@@ -43,19 +38,35 @@ public class PackagingDAO {
      * @param datastore Where to pull the data from for fulfillment center/packaging available mappings.
      */
     public PackagingDAO(PackagingDatastore datastore) {
-        // this does everything below adding to a set in one line,
-        // this.fcPackagingOptions =  new HashSet<>(datastore.getFcPackagingOptions());
-        // but the readme says explicitly to iterate through each value in list and add it to a set so idk
+         this.packagingOptionsSet =  new HashSet<>(datastore.getFcPackagingOptions());
         
-        this.fcPackagingOptions =  new ArrayList<>(datastore.getFcPackagingOptions());
-        this.set = new HashSet<>();
         this.setMap = new HashMap<>();
-        this.fcPackagingOptions.forEach(this::add);
     
-        set.forEach(k -> setMap
+        packagingOptionsSet.forEach(k -> setMap
                 .computeIfAbsent(k.getFulfillmentCenter(), v -> new HashSet<>())
                 .add(k.getPackaging()));
     }
+    
+    /**
+     * Gets key.
+     *
+     * @param <K>   the type parameter
+     * @param <V>   the type parameter
+     * @param map   the map
+     * @param value the value
+     * @return the key
+     */
+    public static <K, V> K getKey(Map<K, V> map, V value)
+    {
+        for (Map.Entry<K, V> entry: map.entrySet())
+        {
+            if (value.equals(entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+    
 
     /**
      * Returns the packaging options available for a given item at the specified fulfillment center. The API
@@ -70,13 +81,18 @@ public class PackagingDAO {
      */
     public List<ShipmentOption> findShipmentOptions(Item item, FulfillmentCenter fulfillmentCenter)
             throws UnknownFulfillmentCenterException, NoPackagingFitsItemException {
-    
-//        boolean fcFound = setMap.containsKey(fulfillmentCenter);
-
-        // Check all FcPackagingOptions for a suitable Packaging in the given FulfillmentCenter
+        
         List<ShipmentOption> result = new ArrayList<>();
+    
+        // need to get packing from the set
+        for (Map.Entry<FulfillmentCenter, Set<Packaging>> entry : this.setMap.entrySet()) {
+            if (setMap.containsKey(fulfillmentCenter)) {
+            }
+            
+        }
+        // Check all FcPackagingOptions for a suitable Packaging in the given FulfillmentCenter
         boolean fcFound = false;
-        for (FcPackagingOption fcPackagingOption : set) {
+        for (FcPackagingOption fcPackagingOption : packagingOptionsSet) {
             Packaging packaging = fcPackagingOption.getPackaging();
             String fcCode = fcPackagingOption.getFulfillmentCenter().getFcCode();
 
@@ -106,10 +122,10 @@ public class PackagingDAO {
         return result;
     }
     
-    public Set<FcPackagingOption> getSet() {
-        return set;
+    public Set<FcPackagingOption> getPackagingOptionsSet() {
+        return packagingOptionsSet;
     }
-    
+
     public Map<FulfillmentCenter, Set<Packaging>> getSetMap() {
         return setMap;
     }
@@ -119,34 +135,54 @@ public class PackagingDAO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PackagingDAO dao = (PackagingDAO) o;
-        return getSet().equals(dao.getSet()) && getSetMap().equals(dao.getSetMap());
+        return getPackagingOptionsSet().equals(dao.getPackagingOptionsSet()) && getSetMap().equals(dao.getSetMap());
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(getSet(), getSetMap());
+        return Objects.hash(getPackagingOptionsSet(), getSetMap());
     }
     
-//    public static void main(String[] args) throws UnknownFulfillmentCenterException, NoPackagingFitsItemException {
-//
-//        PackagingDatastore p = new PackagingDatastore();
-//        PackagingDAO dao = new PackagingDAO(p);
-//        FulfillmentCenter f = new FulfillmentCenter("IND1");
-//
-//        Item i = Item.builder()
-//                .withAsin("234234")
-//                .withDescription("pork")
-//                .withLength(BigDecimal.ONE)
-//                .withHeight(BigDecimal.ONE)
-//                .withWidth(BigDecimal.ONE)
-//                .build();
-//
-//        dao.findShipmentOptions(i, f);
-//
+    
+    public static void main(String[] args) throws UnknownFulfillmentCenterException, NoPackagingFitsItemException {
+
+        PackagingDatastore p = new PackagingDatastore();
+        PackagingDAO dao = new PackagingDAO(p);
+        FulfillmentCenter f = new FulfillmentCenter("IND1");
+
+        Item i = Item.builder()
+                .withAsin("234234")
+                .withDescription("pork")
+                .withLength(BigDecimal.ONE)
+                .withHeight(BigDecimal.ONE)
+                .withWidth(BigDecimal.ONE)
+                .build();
+
+        dao.findShipmentOptions(i, f);
+    
+        FulfillmentCenter ind1 = new FulfillmentCenter("IND1");
+        FulfillmentCenter abe2 = new FulfillmentCenter("ABE2");
+    
+        FcPackagingOption p1 = new FcPackagingOption(ind1, new Packaging(Material.CORRUGATE,
+                BigDecimal.ONE,  BigDecimal.ONE,  BigDecimal.ONE));
+    
+        FcPackagingOption p2 = new FcPackagingOption(abe2, new Packaging(Material.CORRUGATE,
+                BigDecimal.ONE,  BigDecimal.ONE,  BigDecimal.ONE));
+    
+        Map<FulfillmentCenter, Set<Packaging>> setMap;
+        Map<FulfillmentCenter, Set<Packaging>> setMap2;
+    
+        Set<Packaging> singlePackingSet1 = new HashSet<>(Collections.singleton(p1.getPackaging()));
+        Set<Packaging> singlePackingSet2 = new HashSet<>(Collections.singleton(p2.getPackaging()));
+    
+        System.out.println(singlePackingSet1);
+        System.out.println();
+        System.out.println(singlePackingSet2);
+
 //
 //        List<Set<Packaging>> lsp = dao.removeEntryOfPredicate(f);
 //
 //        lsp.forEach(System.out::print);
-//
-//    }
+
+    }
 }
