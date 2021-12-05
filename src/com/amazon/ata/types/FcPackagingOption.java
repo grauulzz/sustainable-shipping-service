@@ -62,4 +62,12 @@ public class FcPackagingOption {
     public int hashCode() {
         return Objects.hash(getFulfillmentCenter().hashCode(), getPackaging().hashCode());
     }
+    
+    @Override
+    public String toString() {
+        return "FcPackagingOption{" +
+                "fulfillmentCenter=" + fulfillmentCenter +
+                ", packaging=" + packaging +
+                '}';
+    }
 }

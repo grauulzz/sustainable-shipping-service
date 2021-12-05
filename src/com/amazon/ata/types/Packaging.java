@@ -65,49 +65,36 @@ public class Packaging {
     }
     
     
-    /**
-     * Returns whether the given item will fit in this packaging.
-     *
-     * @param item the item to test fit for
-     * @return whether the item will fit in this packaging
-     */
+
     public boolean canFitItem(Item item) {
         return this.length.compareTo(item.getLength()) > 0 &&
                 this.width.compareTo(item.getWidth()) > 0 &&
                 this.height.compareTo(item.getHeight()) > 0;
     }
     
-    /**
-     * Returns the mass of the packaging in grams. The packaging weighs 1 gram per square centimeter.
-     *
-     * @return the mass of the packaging
-     */
+
     public BigDecimal getMass() {
         BigDecimal two = BigDecimal.valueOf(2);
-
+        
         // For simplicity, we ignore overlapping flaps
         BigDecimal endsArea = length.multiply(width).multiply(two);
         BigDecimal shortSidesArea = length.multiply(height).multiply(two);
         BigDecimal longSidesArea = width.multiply(height).multiply(two);
-
+        
         return endsArea.add(shortSidesArea).add(longSidesArea);
     }
     
-    @Override
+
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof Packaging)) return false;
         Packaging packaging = (Packaging) o;
         return length.equals(packaging.length) && width.equals(packaging.width) && height.equals(packaging.height);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(length, width, height);
+        return Objects.hash(length.hashCode(), width.hashCode(), height.hashCode());
     }
     
     @Override

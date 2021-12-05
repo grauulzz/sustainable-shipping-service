@@ -79,7 +79,7 @@ public class PrepareShipmentRequest {
         this.length = builder.length;
         this.width = builder.width;
         this.height = builder.height;
-        this.fcCode = builder.innerFcCode;
+        this.fcCode = builder.fcCode;
     }
     
     public String getAsin() {
@@ -181,7 +181,7 @@ public class PrepareShipmentRequest {
         private BigDecimal length;
         private BigDecimal width;
         private BigDecimal height;
-        private String innerFcCode;
+        private String fcCode;
         
         private Builder() {
         }
@@ -249,7 +249,7 @@ public class PrepareShipmentRequest {
          * @return a reference to this Builder
          */
         public Builder withFcCode(String fcCode) {
-            this.innerFcCode = fcCode;
+            this.fcCode = fcCode;
             return this;
         }
         

@@ -151,11 +151,11 @@ class PackagingDAOTest {
     public void whenAddingFulfillmentCenterAsKeyInMap_CheckForDuplicateKeysByNextKeyOfMap_returnsFalse() {
         
         packagingDAO = new PackagingDAO(datastore);
-        setMap = packagingDAO.getSetMap();
+        Map<FulfillmentCenter, Set<Packaging>> setMapFc = packagingDAO.getSetMap();
         
-        Iterator<FulfillmentCenter> iterator = setMap.keySet().iterator();
-        
-        setMap.forEach((k, v) -> {
+        Iterator<FulfillmentCenter> iterator = setMapFc.keySet().iterator();
+    
+        setMapFc.forEach((k, v) -> {
             boolean dupe = k.getFcCode().equals(iterator.next().toString());
             Assertions.assertFalse(dupe);
         });
