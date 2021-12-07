@@ -24,13 +24,16 @@ class PackagingDAOTest {
     private FulfillmentCenter iad2 = new FulfillmentCenter("IAD2");
     
     
-    FcPackagingOption p1 = new FcPackagingOption(ind1, new Packaging(Material.CORRUGATE,
+    FcPackagingOption p1 = new FcPackagingOption(ind1, new Box(Material.CORRUGATE,
             BigDecimal.ONE,  BigDecimal.ONE,  BigDecimal.ONE));
     
-    FcPackagingOption p2 = new FcPackagingOption(iad2, new Packaging(Material.CORRUGATE,
+    FcPackagingOption p2 = new FcPackagingOption(iad2, new Box(Material.CORRUGATE,
             BigDecimal.ONE,  BigDecimal.ONE,  BigDecimal.ONE));
     
-    FcPackagingOption p3 = new FcPackagingOption(abe2, new Packaging(Material.CORRUGATE,
+    FcPackagingOption p2Poly1 = new FcPackagingOption(iad2, new PolyBag(Material.LAMINATED_PLASTIC, new BigDecimal("10000")));
+    FcPackagingOption p2Poly2 = new FcPackagingOption(iad2, new PolyBag(Material.LAMINATED_PLASTIC, new BigDecimal("2000")));
+    
+    FcPackagingOption p3 = new FcPackagingOption(abe2, new Box(Material.CORRUGATE,
             BigDecimal.TEN,  BigDecimal.TEN,  BigDecimal.TEN));
     
     Packaging sameDimensions = p1.getPackaging();
@@ -42,9 +45,45 @@ class PackagingDAOTest {
     
     Map<FulfillmentCenter, Set<Packaging>> setMap;
     Map<FulfillmentCenter, Set<Packaging>> setMap2;
-
     
-
+    @Test
+    public void whenAddingDiffPackagingDimensions_withSameFulfillmentCenter_returnsTwoDiffMapEntries() {
+        // GIVEN
+        Set<FcPackagingOption> singlePackingSet1 = new HashSet<>(Collections.singleton(p1));
+        Set<FcPackagingOption> singlePackingSet2 = new HashSet<>(Collections.singleton(p2));
+        setMap = new HashMap<>();
+        
+        // WHEN
+        singlePackingSet1.forEach(k -> setMap
+                .computeIfAbsent(k.getFulfillmentCenter(), v -> new HashSet<>())
+                .add(k.getPackaging()));
+        
+        singlePackingSet2.forEach(k -> setMap
+                .computeIfAbsent(k.getFulfillmentCenter(), v -> new HashSet<>())
+                .add(k.getPackaging()));
+        
+        // THEN
+        Assertions.assertEquals(2, setMap.size());
+    }
+    
+    @Test
+    public void diffPackagingOptions_withSameFulfillmentCenter_returnsTwoDiffMapEntries() {
+        // GIVEN
+        setMap = new HashMap<>();
+        Packaging pack = new PolyBag(Material.LAMINATED_PLASTIC,
+                BigDecimal.valueOf(10000));
+        
+        Packaging pack2 = new PolyBag(Material.LAMINATED_PLASTIC,
+                BigDecimal.valueOf(2000));
+    
+        Set<Packaging> set1 = new HashSet<>(Collections.singleton(pack));
+        Set<Packaging> set2 = new HashSet<>(Collections.singleton(pack2));
+        // WHEN
+        setMap.put(iad2, set1);
+        setMap.put(iad2, set2);
+        // THEN
+        Assertions.assertEquals(1, setMap.size());
+    }
     
     @Test
     public void whenHashCodeIsCalledOnPackaging_withDiffDimensions_thenDiffHashcode() {
@@ -108,27 +147,7 @@ class PackagingDAOTest {
         // THEN
         Assertions.assertEquals(ref.count, packageSet1.size());
     }
-    
-    @Test
-    public void whenAddingDiffPackagingDimensions_withSameFulfillmentCenter_returnsTwoDiffMapEntries() {
-        // GIVEN
-        Set<FcPackagingOption> singlePackingSet1 = new HashSet<>(Collections.singleton(p1));
-        Set<FcPackagingOption> singlePackingSet2 = new HashSet<>(Collections.singleton(p2));
-        setMap = new HashMap<>();
-        
-        // WHEN
-        singlePackingSet1.forEach(k -> setMap
-                .computeIfAbsent(k.getFulfillmentCenter(), v -> new HashSet<>())
-                .add(k.getPackaging()));
-        
-        singlePackingSet2.forEach(k -> setMap
-                .computeIfAbsent(k.getFulfillmentCenter(), v -> new HashSet<>())
-                .add(k.getPackaging()));
-        
-        // THEN
-        Assertions.assertEquals(2, setMap.size());
-    }
-    
+
     
     @Test
     public void whenAddingSamePackagingDimensions_withSameFulfillmentCenter_returnsNoDuplicateKeys() {

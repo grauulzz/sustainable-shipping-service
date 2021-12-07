@@ -26,18 +26,35 @@ public class PackagingDatastore {
             createFcPackagingOption("PDX1", Material.CORRUGATE, "40", "40", "40"),
             createFcPackagingOption("PDX1", Material.CORRUGATE, "60", "60", "60"),
             createFcPackagingOption("PDX1", Material.CORRUGATE, "60", "60", "60")
+//            createOptionsUsingVolume("IAD2",  Material.LAMINATED_PLASTIC, "2000"),
+//            createOptionsUsingVolume("IAD2",  Material.LAMINATED_PLASTIC, "10000")
     );
+    
+    private FcPackagingOption createOptionsUsingVolume(String fcCode, Material m, String vol) {
+        FulfillmentCenter fc = new FulfillmentCenter(fcCode);
+        Packaging p = new PolyBag(m, new BigDecimal(vol));
+        return new FcPackagingOption(fc, p);
+    }
     
     /**
      * Create fulfillment center packaging option from provided parameters.
      */
     private FcPackagingOption createFcPackagingOption(String fcCode, Material material,
                                                       String length, String width, String height) {
-        FulfillmentCenter fulfillmentCenter = new FulfillmentCenter(fcCode);
-        Packaging box = new Packaging(material, new BigDecimal(length), new BigDecimal(width),
-                new BigDecimal(height));
         
-        return new FcPackagingOption(fulfillmentCenter, box);
+        FulfillmentCenter fulfillmentCenter = new FulfillmentCenter(fcCode);
+        Packaging packaging = new Packaging(material, new BigDecimal(length),
+                new BigDecimal(width), new BigDecimal(height));
+        
+        if (packaging.getMaterial() == Material.LAMINATED_PLASTIC) {
+            
+            packaging = new PolyBag(material, packaging.getVolume());
+            return new FcPackagingOption(fulfillmentCenter, packaging);
+        }
+        
+        packaging = new Box(material, new BigDecimal(length), new BigDecimal(width), new BigDecimal(height));
+        return new FcPackagingOption(fulfillmentCenter, packaging);
+    
     }
     
     public List<FcPackagingOption> getFcPackagingOptions() {
