@@ -1,7 +1,6 @@
 package com.amazon.ata.types;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 /**
  * Represents a packaging option.
@@ -31,6 +30,8 @@ public class Packaging {
      */
     private BigDecimal height;
     
+    private BigDecimal volume;
+    
     /**
      * Instantiates a new Packaging object.
      *
@@ -44,6 +45,7 @@ public class Packaging {
         this.length = length;
         this.width = width;
         this.height = height;
+//        this.volume = length.multiply(width).multiply(height);
     }
     
     /**
@@ -53,6 +55,11 @@ public class Packaging {
      */
     public Packaging(Material material) {
         this.material = material;
+    }
+    
+    public Packaging(Material material, BigDecimal volume) {
+        this.material = material;
+        this.volume = volume;
     }
     
     /**
@@ -65,36 +72,29 @@ public class Packaging {
     }
     
     
-
+    /**
+     * Can fit item boolean.
+     *
+     * @param item the item
+     * @return the boolean
+     */
     public boolean canFitItem(Item item) {
-        return this.length.compareTo(item.getLength()) > 0 &&
-                this.width.compareTo(item.getWidth()) > 0 &&
-                this.height.compareTo(item.getHeight()) > 0;
+        return false;
     }
     
-
+    
+    /**
+     * Gets mass.
+     *
+     * @return the mass
+     */
     public BigDecimal getMass() {
-        BigDecimal two = BigDecimal.valueOf(2);
-        
-        // For simplicity, we ignore overlapping flaps
-        BigDecimal endsArea = length.multiply(width).multiply(two);
-        BigDecimal shortSidesArea = length.multiply(height).multiply(two);
-        BigDecimal longSidesArea = width.multiply(height).multiply(two);
-        
-        return endsArea.add(shortSidesArea).add(longSidesArea);
+        return BigDecimal.ONE;
     }
     
-
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Packaging)) return false;
-        Packaging packaging = (Packaging) o;
-        return length.equals(packaging.length) && width.equals(packaging.width) && height.equals(packaging.height);
-    }
     
-    @Override
-    public int hashCode() {
-        return Objects.hash(length.hashCode(), width.hashCode(), height.hashCode());
+    public BigDecimal getVolume() {
+        return volume;
     }
     
     @Override

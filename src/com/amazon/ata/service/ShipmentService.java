@@ -20,32 +20,32 @@ public class ShipmentService {
     /**
      * PackagingDAO is used to retrieve all valid shipment options for a given fulfillment center and item.
      */
-    private PackagingDAO packagingDAO;
+    private PackagingDAO dao;
 
     /**
      * A CostStrategy used to calculate the relative cost of a ShipmentOption.
      */
-    private CostStrategy costStrategy;
+    private CostStrategy c;
 
     /**
      * Instantiates a new ShipmentService object.
-     * @param packagingDAO packaging data access object used to retrieve all available shipment options
-     * @param costStrategy cost strategy used to calculate the relative cost of a shipment option
+     * @param dao packaging data access object used to retrieve all available shipment options
+     * @param c cost strategy used to calculate the relative cost of a shipment option
      */
-    public ShipmentService(PackagingDAO packagingDAO, CostStrategy costStrategy) {
-        this.packagingDAO = packagingDAO;
-        this.costStrategy = costStrategy;
+    public ShipmentService(PackagingDAO dao, CostStrategy c) {
+        this.dao = dao;
+        this.c = c;
     }
     /**
      * Finds the shipment option for the given item and fulfillment center with the lowest cost.
      *
      * @param item the item to package
-     * @param fulfillmentCenter fulfillment center in which to look for the packaging
+     * @param center fulfillment center in which to look for the packaging
      * @return the lowest cost shipment option for the item and fulfillment center, or null if none found
      */
-    public ShipmentOption findShipmentOption(final Item item, final FulfillmentCenter fulfillmentCenter) {
+    public ShipmentOption findShipmentOption(final Item item, final FulfillmentCenter center) {
         try {
-            List<ShipmentOption> results = this.packagingDAO.findShipmentOptions(item, fulfillmentCenter);
+            List<ShipmentOption> results = this.dao.findShipmentOptions(item, center);
             return getLowestCostShipmentOption(results);
         } catch (Exception e) {
             return null;
@@ -53,16 +53,16 @@ public class ShipmentService {
     }
 
     private ShipmentOption getLowestCostShipmentOption(List<ShipmentOption> results) {
-        List<ShipmentCost> shipmentCosts = applyCostStrategy(results);
-        Collections.sort(shipmentCosts);
-        return shipmentCosts.get(0).getShipmentOption();
+        List<ShipmentCost> costs = applyCostStrategy(results);
+        Collections.sort(costs);
+        return costs.get(0).getShipmentOption();
     }
 
     private List<ShipmentCost> applyCostStrategy(List<ShipmentOption> results) {
-        List<ShipmentCost> shipmentCosts = new ArrayList<>();
+        List<ShipmentCost> costs = new ArrayList<>();
         for (ShipmentOption option : results) {
-            shipmentCosts.add(costStrategy.getCost(option));
+            costs.add(c.getCost(option));
         }
-        return shipmentCosts;
+        return costs;
     }
 }
