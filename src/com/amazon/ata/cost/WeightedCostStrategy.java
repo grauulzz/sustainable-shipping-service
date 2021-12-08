@@ -3,8 +3,6 @@ package com.amazon.ata.cost;
 import com.amazon.ata.types.ShipmentCost;
 import com.amazon.ata.types.ShipmentOption;
 
-import java.math.BigDecimal;
-
 
 // --------------------blendedCost------------------------
 // note: these have diff mass calculations but the monetary cost value is assumed to be same for both
@@ -34,21 +32,33 @@ import java.math.BigDecimal;
 
 // cu decreased by %98 between B2K and P20
 
-
-
-
-
 public class WeightedCostStrategy implements CostStrategy {
     
     private CostStrategy cs;
+    private MonetaryCostStrategy mc;
     public WeightedCostStrategy() {}
     public WeightedCostStrategy(CostStrategy cs) {
         this.cs = cs;
     }
     
-    private void addStrategyWithWeight(CostStrategy cs, BigDecimal percentage) {
-    
-    }
+//
+//    public WeightedCostStrategy(CostStrategy cs, MonetaryCostStrategy mc) {
+//        this.cs = cs;
+//        this.mc = mc;
+//    }
+//
+//    private void addStrategyWithWeight(CostStrategy cs, BigDecimal percentage) {
+//
+//    }
+//
+//    public ShipmentCost getWeightedCost(Material m, ShipmentOption shipmentOpt) {
+//        if (m == Material.CORRUGATE) {
+//            cs.getCost(shipmentOpt);
+//        }
+//    }
+//    public ShipmentCost getWeightedCostForAnyStrategy(ShipmentOption shipmentOption) {
+//        return this.cs.getCost(shipmentOption);
+//    }
     
     @Override
     public ShipmentCost getCost(ShipmentOption shipmentOption) {

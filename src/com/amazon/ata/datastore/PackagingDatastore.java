@@ -27,7 +27,18 @@ public class PackagingDatastore {
             createFcPackagingOption("IAD2", Material.CORRUGATE, "20", "20", "20"),
             createFcPackagingOption("PDX1", Material.CORRUGATE, "40", "40", "40"),
             createFcPackagingOption("PDX1", Material.CORRUGATE, "60", "60", "60"),
-            createFcPackagingOption("PDX1", Material.CORRUGATE, "60", "60", "60")
+            createFcPackagingOption("PDX1", Material.CORRUGATE, "60", "60", "60"),
+            createWithVolume("IAD2",Material.LAMINATED_PLASTIC,"5000"),
+            createWithVolume("YOW4",Material.LAMINATED_PLASTIC,"2000"),
+            createWithVolume("YOW4",Material.LAMINATED_PLASTIC,"5000"),
+            createWithVolume("YOW4",Material.LAMINATED_PLASTIC,"10000"),
+            createWithVolume("IND1",Material.LAMINATED_PLASTIC,"2000"),
+            createWithVolume("IND1",Material.LAMINATED_PLASTIC,"5000"),
+            createWithVolume("ABE2",Material.LAMINATED_PLASTIC,"2000"),
+            createWithVolume("ABE2",Material.LAMINATED_PLASTIC,"6000"),
+            createWithVolume("PDX1",Material.LAMINATED_PLASTIC,"5000"),
+            createWithVolume("PDX1",Material.LAMINATED_PLASTIC,"10000"),
+            createWithVolume("YOW4",Material.LAMINATED_PLASTIC,"5000")
 
     );
 
