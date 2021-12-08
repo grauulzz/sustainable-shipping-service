@@ -11,19 +11,38 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WeightedCostStrategyTest {
     private static final Packaging BOX_10x10x20 =
-            new Box(Material.CORRUGATE, BigDecimal.valueOf(10), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
+            new Box(Material.CORRUGATE, BigDecimal.valueOf(10),
+                    BigDecimal.valueOf(10), BigDecimal.valueOf(20));
     
     private static final Packaging POLYBAG_VOLUME_20000cc =
-            new PolyBag(Material.LAMINATED_PLASTIC, BigDecimal.valueOf(10), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
+            new PolyBag(Material.LAMINATED_PLASTIC, BigDecimal.valueOf(10),
+                    BigDecimal.valueOf(10), BigDecimal.valueOf(20));
     
     private WeightedCostStrategy strategy;
-    
+
     @BeforeEach
     void setUp() {
         strategy = new WeightedCostStrategy();
     }
     
     @Test
+    void fromWeightedCS_getEightyPercentOfCarbonCost_returnsWeightedCost() {
+        // GIVEN
+        ShipmentOption option = ShipmentOption.builder()
+                .withPackaging(POLYBAG_VOLUME_20000cc)
+                .build();
+        
+        // WHEN
+        strategy = new WeightedCostStrategy(new CarbonCostStrategy(),  BigDecimal.valueOf(.80));
+        ShipmentCost shipmentCost = strategy.getCost(option);
+        
+        // THEN 0.2592 is %80 of the cost strategy being called
+        assertEquals(0,
+                BigDecimal.valueOf(0.2592).compareTo(shipmentCost.getCost()),
+                "Incorrect carbon cost calculation for a polybag with a volume of 20000cc.");
+    }
+    
+     @Test
     void fromWeightedCS_getCostLaminatedPlasticMaterial_returnsCorrectCarbonCost() {
         // GIVEN
         ShipmentOption option = ShipmentOption.builder()
@@ -32,7 +51,7 @@ public class WeightedCostStrategyTest {
         
         // WHEN
         strategy = new WeightedCostStrategy(new CarbonCostStrategy());
-        ShipmentCost shipmentCost = strategy.getCost(option);
+        ShipmentCost shipmentCost = strategy.getCostStrategy(option);
         
         // THEN 0.3240
         assertEquals(0,
@@ -49,7 +68,7 @@ public class WeightedCostStrategyTest {
         
         // WHEN
         strategy = new WeightedCostStrategy(new CarbonCostStrategy());
-        ShipmentCost shipmentCost = strategy.getCost(option);
+        ShipmentCost shipmentCost = strategy.getCostStrategy(option);
         
         // THEN
         assertEquals(0,
@@ -66,7 +85,7 @@ public class WeightedCostStrategyTest {
         
         // WHEN
         strategy = new WeightedCostStrategy(new MonetaryCostStrategy());
-        ShipmentCost shipmentCost = strategy.getCost(option);
+        ShipmentCost shipmentCost = strategy.getCostStrategy(option);
         
         // THEN
         assertTrue(BigDecimal.valueOf(5.43).compareTo(shipmentCost.getCost()) == 0,
@@ -77,7 +96,8 @@ public class WeightedCostStrategyTest {
     void fromWeightedCS_corrugatePlasticMaterial_returnsCorrectMonetaryCost() {
         // GIVEN
         Packaging Poly_10x10x20 =
-                new PolyBag(Material.CORRUGATE, BigDecimal.valueOf(10), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
+                new PolyBag(Material.CORRUGATE, BigDecimal.valueOf(10),
+                        BigDecimal.valueOf(10), BigDecimal.valueOf(20));
         
         ShipmentOption option = ShipmentOption.builder()
                 .withPackaging(Poly_10x10x20)
@@ -85,7 +105,7 @@ public class WeightedCostStrategyTest {
         
         // WHEN
         strategy = new WeightedCostStrategy(new MonetaryCostStrategy());
-        ShipmentCost shipmentCost = strategy.getCost(option);
+        ShipmentCost shipmentCost = strategy.getCostStrategy(option);
         
         // THEN
         assertEquals(BigDecimal.valueOf(0.5650).compareTo(shipmentCost.getCost()), 0,
