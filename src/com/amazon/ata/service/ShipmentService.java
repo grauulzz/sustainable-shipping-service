@@ -51,7 +51,8 @@ public class ShipmentService {
             return null;
         }
     }
-
+    
+    // sorts list of shipment opts and returns the first index
     private ShipmentOption getLowestCostOpt(List<ShipmentOption> results) {
         List<ShipmentCost> costs = applyCostStrategy(results);
         Collections.sort(costs);

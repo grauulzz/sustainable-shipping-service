@@ -10,67 +10,20 @@ import java.math.BigDecimal;
  * the packaging's dimensions.
  */
 public class Packaging {
+
+    
     /**
      * The material this packaging is made of.
      */
-    private Material material;
-
-    /**
-     * This packaging's length.
-     */
-    private BigDecimal length;
-
-    /**
-     * This packaging's smallest dimension.
-     */
-    private BigDecimal width;
-
-    /**
-     * This packaging's largest dimension.
-     */
-    private BigDecimal height;
+    private final Material material;
     
-    private BigDecimal volume;
-    
-    /**
-     * Instantiates a new Packaging object.
-     *
-     * @param material - the Material of the package
-     * @param length   the length
-     * @param width    the width
-     * @param height   the height
-     */
-    public Packaging(Material material, BigDecimal length, BigDecimal width, BigDecimal height) {
-        this.material = material;
-        this.length = length;
-        this.width = width;
-        this.height = height;
-//        this.volume = length.multiply(width).multiply(height);
-    }
-    
-    /**
-     * Instantiates a new Packaging.
-     *
-     * @param material the material
-     */
     public Packaging(Material material) {
         this.material = material;
     }
     
-    public Packaging(Material material, BigDecimal volume) {
-        this.material = material;
-        this.volume = volume;
-    }
-    
-    /**
-     * Gets material.
-     *
-     * @return the material
-     */
     public Material getMaterial() {
         return material;
     }
-    
     
     /**
      * Can fit item boolean.
@@ -92,18 +45,10 @@ public class Packaging {
         return BigDecimal.ONE;
     }
     
-    
-    public BigDecimal getVolume() {
-        return volume;
-    }
-    
     @Override
     public String toString() {
         return "Packaging{" +
                 "material=" + material +
-                ", length=" + length +
-                ", width=" + width +
-                ", height=" + height +
                 '}';
     }
 }

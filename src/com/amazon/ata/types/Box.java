@@ -5,10 +5,8 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Box extends Packaging {
-    private BigDecimal length;
-    private BigDecimal width;
-    private BigDecimal height;
     
+    BigDecimal length; BigDecimal width; BigDecimal height;
     
     /**
      * Instantiates a new Packaging object.
@@ -27,35 +25,21 @@ public class Box extends Packaging {
     
     @Override
     public boolean canFitItem(Item item) {
-        return this.length.compareTo(item.getLength()) > 0 &&
-                this.width.compareTo(item.getWidth()) > 0 &&
-                this.height.compareTo(item.getHeight()) > 0;
+        return length.compareTo(item.getLength()) > 0 &&
+                width.compareTo(item.getWidth()) > 0 &&
+                height.compareTo(item.getHeight()) > 0;
     }
-    
     
     @Override
     public BigDecimal getMass() {
         BigDecimal two = BigDecimal.valueOf(2);
         
         // For simplicity, we ignore overlapping flaps
-        BigDecimal endsArea = length.multiply(width).multiply(two);
-        BigDecimal shortSidesArea = length.multiply(height).multiply(two);
-        BigDecimal longSidesArea = width.multiply(height).multiply(two);
+        BigDecimal endsArea = this.length.multiply(this.width).multiply(two);
+        BigDecimal shortSidesArea = this.length.multiply(this.height).multiply(two);
+        BigDecimal longSidesArea = this.width.multiply(this.height).multiply(two);
         
         return endsArea.add(shortSidesArea).add(longSidesArea);
-    }
-    
-    
-    public BigDecimal getLength() {
-        return length;
-    }
-    
-    public BigDecimal getWidth() {
-        return width;
-    }
-    
-    public BigDecimal getHeight() {
-        return height;
     }
     
     @Override
@@ -68,7 +52,7 @@ public class Box extends Packaging {
     
     @Override
     public int hashCode() {
-        return Objects.hash(getLength().hashCode(), getHeight().hashCode(), getWidth().hashCode());
+        return Objects.hash(getLength(), getWidth(), getHeight());
     }
     
     @Override
@@ -78,5 +62,17 @@ public class Box extends Packaging {
                 ", width=" + width +
                 ", height=" + height +
                 "} " + super.toString();
+    }
+    
+    public BigDecimal getLength() {
+        return length;
+    }
+    
+    public BigDecimal getWidth() {
+        return width;
+    }
+    
+    public BigDecimal getHeight() {
+        return height;
     }
 }

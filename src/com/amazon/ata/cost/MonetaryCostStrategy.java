@@ -17,9 +17,7 @@ public class MonetaryCostStrategy implements CostStrategy {
     private static final BigDecimal LABOR_COST = BigDecimal.valueOf(0.43);
     private final Map<Material, BigDecimal> materialCostPerGram;
 
-    /**
-     * Initializes a MonetaryCostStrategy.
-     */
+
     public MonetaryCostStrategy() {
         materialCostPerGram = new HashMap<>();
         materialCostPerGram.put(Material.CORRUGATE, BigDecimal.valueOf(.005));
