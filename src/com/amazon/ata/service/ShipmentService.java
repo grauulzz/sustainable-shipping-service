@@ -46,13 +46,14 @@ public class ShipmentService {
     public ShipmentOption findShipmentOption(final Item item, final FulfillmentCenter center) {
         try {
             List<ShipmentOption> results = this.dao.findShipmentOptions(item, center);
-            return getLowestCostShipmentOption(results);
+            return getLowestCostOpt(results);
         } catch (Exception e) {
             return null;
         }
     }
-
-    private ShipmentOption getLowestCostShipmentOption(List<ShipmentOption> results) {
+    
+    // sorts list of shipment opts and returns the first index
+    private ShipmentOption getLowestCostOpt(List<ShipmentOption> results) {
         List<ShipmentCost> costs = applyCostStrategy(results);
         Collections.sort(costs);
         return costs.get(0).getShipmentOption();
