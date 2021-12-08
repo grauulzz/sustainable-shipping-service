@@ -8,7 +8,8 @@ import java.util.Objects;
  */
 public class PolyBag extends Packaging {
     
-    BigDecimal length; BigDecimal width; BigDecimal height; BigDecimal volume;
+    private BigDecimal volume; private BigDecimal length;
+    private BigDecimal width; private BigDecimal height;
     
     /**
      * Instantiates a new Packaging object.
@@ -24,6 +25,11 @@ public class PolyBag extends Packaging {
         this.width = width;
         this.height = height;
         this.volume = length.multiply(width).multiply(height);
+    }
+    
+    public PolyBag(Material material, BigDecimal volume) {
+        super(material);
+        this.volume = volume;
     }
     
     @Override

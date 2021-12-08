@@ -6,7 +6,9 @@ import java.util.Objects;
 
 public class Box extends Packaging {
     
-    BigDecimal length; BigDecimal width; BigDecimal height;
+    private BigDecimal volume; private BigDecimal length;
+    private BigDecimal width; private BigDecimal height;
+    
     
     /**
      * Instantiates a new Packaging object.
@@ -21,6 +23,11 @@ public class Box extends Packaging {
         this.length = length;
         this.width = width;
         this.height = height;
+    }
+    
+    public Box(Material material, BigDecimal volume) {
+        super(material);
+        this.volume = volume;
     }
     
     @Override
@@ -75,4 +82,6 @@ public class Box extends Packaging {
     public BigDecimal getHeight() {
         return height;
     }
+    
+    public BigDecimal getVolume() {return volume; }
 }
