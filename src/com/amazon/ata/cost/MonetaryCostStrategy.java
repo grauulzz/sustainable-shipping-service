@@ -9,9 +9,15 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * A strategy to calculate the cost of a ShipmentOption based on its dollar cost.
- */
+
+// ----monetaryCost----
+// LABOR_COST: 0.43
+// CORRUGATE_COST: .005/g
+// monetaryCostCOR = (mass * CORRUGATE_COST) + LABOR_COST
+// monetaryCostCOR = (mass * .005/g) + 0.43
+// monetaryCostLP = (mass * LAMINATED_PLASTIC_COST) + LABOR_COST
+// monetaryCostLP = (mass * .25/g) + 0.43
+
 public class MonetaryCostStrategy implements CostStrategy {
 
     private static final BigDecimal LABOR_COST = BigDecimal.valueOf(0.43);
