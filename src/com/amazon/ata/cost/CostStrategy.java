@@ -17,4 +17,5 @@ public interface CostStrategy {
      * @return total cost of the shipment option
      */
     ShipmentCost getCost(ShipmentOption shipmentOption);
+    
 }

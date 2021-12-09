@@ -3,15 +3,10 @@ package com.amazon.ata.dao;
 import com.amazon.ata.datastore.PackagingDatastore;
 import com.amazon.ata.exceptions.NoPackagingFitsItemException;
 import com.amazon.ata.exceptions.UnknownFulfillmentCenterException;
-import com.amazon.ata.types.Box;
-import com.amazon.ata.types.FcPackagingOption;
-import com.amazon.ata.types.FulfillmentCenter;
-import com.amazon.ata.types.Item;
-import com.amazon.ata.types.Material;
-import com.amazon.ata.types.Packaging;
-import com.amazon.ata.types.ShipmentOption;
+import com.amazon.ata.types.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -20,34 +15,32 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PackagingDAOTest {
-
+    
+    @Mock
     private Item testItem = createItem("30", "30", "30");
     private Item smallItem = createItem("5", "5", "5");
-
+    
+    @Mock
     private FulfillmentCenter ind1 = new FulfillmentCenter("IND1");
     private FulfillmentCenter abe2 = new FulfillmentCenter("ABE2");
     private FulfillmentCenter iad2 = new FulfillmentCenter("IAD2");
     
-    
+    @Mock
     FcPackagingOption p1 = new FcPackagingOption(ind1, new Box(Material.CORRUGATE,
             BigDecimal.ONE,  BigDecimal.ONE,  BigDecimal.ONE));
-    
     FcPackagingOption p2 = new FcPackagingOption(iad2, new Box(Material.CORRUGATE,
             BigDecimal.ONE,  BigDecimal.ONE,  BigDecimal.ONE));
+    FcPackagingOption p3 = new FcPackagingOption(abe2, new Box(Material.CORRUGATE,
+            BigDecimal.TEN,  BigDecimal.TEN,  BigDecimal.TEN));
     
 //    FcPackagingOption p2Poly1 = new FcPackagingOption(iad2, new PolyBag(Material.LAMINATED_PLASTIC, new BigDecimal("10000")));
 //    FcPackagingOption p2Poly2 = new FcPackagingOption(iad2, new PolyBag(Material.LAMINATED_PLASTIC, new BigDecimal("2000")));
     
-    FcPackagingOption p3 = new FcPackagingOption(abe2, new Box(Material.CORRUGATE,
-            BigDecimal.TEN,  BigDecimal.TEN,  BigDecimal.TEN));
-    
+    @Mock
     Packaging sameDimensions = p1.getPackaging();
     Packaging diffDimensions = p3.getPackaging();
-    
-    
     private final PackagingDatastore datastore = new PackagingDatastore();
     private PackagingDAO packagingDAO;
-    
     Map<FulfillmentCenter, Set<Packaging>> setMap;
     Map<FulfillmentCenter, Set<Packaging>> setMap2;
     
