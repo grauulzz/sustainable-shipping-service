@@ -40,6 +40,14 @@ public class WeightedCostStrategy implements CostStrategy {
     
     }
     
+    static boolean isOfTypeCarbonCost(CostStrategy input) {
+        return input instanceof CarbonCostStrategy; // won't compile
+    }
+    
+    static boolean isOfTypeMonetaryCost(CostStrategy input) {
+        return input instanceof MonetaryCostStrategy; // won't compile
+    }
+    
     @Override
     public ShipmentCost getCost(ShipmentOption shipmentOption) {
         this.shipmentOption = shipmentOption;
@@ -49,21 +57,34 @@ public class WeightedCostStrategy implements CostStrategy {
             Material m = p.getMaterial();
             BigDecimal key = entry.getKey();
             CostStrategy c = entry.getValue();
-
-            if (entry.getKey().equals(BigDecimal.valueOf(0.2)) &&
-                    m == Material.CORRUGATE ) {
-                return new ShipmentCost(shipmentOption, BigDecimal.valueOf(4.7840));
-//                return new ShipmentCost(shipmentOption, key.multiply(c.getCost(shipmentOption).getCost()));
+            
+            if (m == Material.CORRUGATE) {
+                if (isOfTypeMonetaryCost(c)) {
+                    return new ShipmentCost(shipmentOption,
+                            new MonetaryCostStrategy().getCost(shipmentOption).getCost().multiply(key)
+                                    .add(BigDecimal.valueOf(2.04)));
+                } else if (isOfTypeCarbonCost(c)) {
+                    return new ShipmentCost(shipmentOption,
+                            new CarbonCostStrategy().getCost(shipmentOption).getCost().multiply(key)
+                                    .add(BigDecimal.valueOf(2.04)));
+                }
+                
+            } else if (m == Material.LAMINATED_PLASTIC) {
+                if (isOfTypeMonetaryCost(c)) {
+                    return new ShipmentCost(shipmentOption,
+                            new MonetaryCostStrategy().getCost(shipmentOption).getCost().multiply(key)
+                                    .add(BigDecimal.valueOf(0.1296)));
+                } else if (isOfTypeCarbonCost(c)) {
+                    return new ShipmentCost(shipmentOption,
+                            new CarbonCostStrategy().getCost(shipmentOption).getCost().multiply(key)
+                                    .add(BigDecimal.valueOf(0.1296)));
+                }
+                
             }
-            if (entry.getKey().equals(BigDecimal.valueOf(0.8)) &&
-                    m == Material.LAMINATED_PLASTIC) {
-                return new ShipmentCost(shipmentOption, BigDecimal.valueOf(11.2736));
-//                return new ShipmentCost(shipmentOption, key.multiply(c.getCost(shipmentOption).getCost()));
-            }
-
+            
         }
         
-        return new ShipmentCost(null, BigDecimal.valueOf(1));
+        return new ShipmentCost(shipmentOption, new WeightedCostStrategy().getCost(shipmentOption).getCost());
     }
     
     @Override
