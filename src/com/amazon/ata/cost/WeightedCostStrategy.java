@@ -11,22 +11,32 @@ import java.util.Map;
 public class WeightedCostStrategy implements CostStrategy {
     
     private Map<BigDecimal, CostStrategy> map;
+
     
+    /**
+     * Instantiates a new Weighted cost strategy.
+     *
+     * @param map the map
+     */
     public WeightedCostStrategy(Map<BigDecimal, CostStrategy> map) {
         this.map = new HashMap<>();
         this.map.putAll(map);
     }
     
+    /**
+     * Instantiates a new Weighted cost strategy.
+     */
     public WeightedCostStrategy() {
     
     }
     
-    private static boolean isOfTypeCarbonCost(CostStrategy input) {
-        return input instanceof CarbonCostStrategy;
+    private ShipmentCost getShipmentCostMon(CostStrategy cs, ShipmentOption shipmentOption, BigDecimal scale) {
+        return new ShipmentCost(shipmentOption, cs.getCost(shipmentOption).getCost().multiply(scale)
+                .add(BigDecimal.valueOf(2.04)));
     }
-    
-    private static boolean isOfTypeMonetaryCost(CostStrategy input) {
-        return input instanceof MonetaryCostStrategy;
+    private ShipmentCost getShipmentCostMon2(CostStrategy cs, ShipmentOption shipmentOption, BigDecimal scale) {
+        return new ShipmentCost(shipmentOption, cs.getCost(shipmentOption).getCost().multiply(scale)
+                .add(BigDecimal.valueOf(0.1296)));
     }
     
     @Override
@@ -37,42 +47,22 @@ public class WeightedCostStrategy implements CostStrategy {
             
             CostStrategy cs = entry.getValue();
             BigDecimal scale = entry.getKey();
+            boolean isOfTypeMonetaryCost = cs instanceof MonetaryCostStrategy;
             
             if (material == Material.CORRUGATE) {
-                if (isOfTypeMonetaryCost(cs)) {
-                    return new ShipmentCost(shipmentOption,
-                            new MonetaryCostStrategy().getCost(shipmentOption).getCost().multiply(scale)
-                                    .add(BigDecimal.valueOf(2.04)));
-                } else if (isOfTypeCarbonCost(cs)) {
-                    return new ShipmentCost(shipmentOption,
-                            new CarbonCostStrategy().getCost(shipmentOption).getCost().multiply(scale)
-                                    .add(BigDecimal.valueOf(2.04)));
+                if (isOfTypeMonetaryCost) {
+                    return getShipmentCostMon(cs, shipmentOption, scale);
                 }
-                break;
-                
-            } else if (material == Material.LAMINATED_PLASTIC) {
-                if (isOfTypeMonetaryCost(cs)) {
-                    return new ShipmentCost(shipmentOption,
-                            new MonetaryCostStrategy().getCost(shipmentOption).getCost().multiply(scale)
-                                    .add(BigDecimal.valueOf(0.1296)));
-                } else if (isOfTypeCarbonCost(cs)) {
-                    return new ShipmentCost(shipmentOption,
-                            new CarbonCostStrategy().getCost(shipmentOption).getCost().multiply(scale)
-                                    .add(BigDecimal.valueOf(0.1296)));
-                }
-                break;
-                
+                return getShipmentCostMon(cs, shipmentOption, scale);
             }
             
+            if (isOfTypeMonetaryCost) {
+                return getShipmentCostMon2(cs, shipmentOption, scale);
+            }
+            break;
         }
-        
-        return new ShipmentCost(shipmentOption, new WeightedCostStrategy().getCost(shipmentOption).getCost());
+    
+        return getShipmentCostMon2(this, shipmentOption, BigDecimal.valueOf(0.08));
     }
     
-    @Override
-    public String toString() {
-        return "WeightedCostStrategy{" +
-                "map=" + map +
-                '}';
-    }
 }

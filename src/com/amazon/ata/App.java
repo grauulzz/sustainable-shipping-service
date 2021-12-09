@@ -19,7 +19,6 @@ public class App {
     }
 
     private static CostStrategy getCostStrategy() {
-//        Map<BigDecimal, CostStrategy> map = new HashMap<>();
         return new WeightedCostStrategy();
     }
 

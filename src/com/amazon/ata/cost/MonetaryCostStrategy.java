@@ -9,22 +9,15 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-
-// ----monetaryCost----
-// LABOR_COST: 0.43
-// CORRUGATE_COST: .005/g
-// monetaryCostCOR = (mass * CORRUGATE_COST) + LABOR_COST
-// monetaryCostCOR = (mass * .005/g) + 0.43
-// monetaryCostLP = (mass * LAMINATED_PLASTIC_COST) + LABOR_COST
-// monetaryCostLP = (mass * .25/g) + 0.43
-
 public class MonetaryCostStrategy implements CostStrategy {
 
     private static final BigDecimal LABOR_COST = BigDecimal.valueOf(0.43);
     private final Map<Material, BigDecimal> materialCostPerGram;
-    ShipmentOption shipmentOption;
     
     
+    /**
+     * Instantiates a new Monetary cost strategy.
+     */
     public MonetaryCostStrategy() {
         materialCostPerGram = new HashMap<>();
         materialCostPerGram.put(Material.CORRUGATE, BigDecimal.valueOf(.005));
@@ -33,7 +26,7 @@ public class MonetaryCostStrategy implements CostStrategy {
 
     @Override
     public ShipmentCost getCost(ShipmentOption shipmentOption) {
-        this.shipmentOption = shipmentOption;
+
         Packaging packaging = shipmentOption.getPackaging();
         BigDecimal materialCost = this.materialCostPerGram.get(packaging.getMaterial());
 
@@ -43,11 +36,4 @@ public class MonetaryCostStrategy implements CostStrategy {
         return new ShipmentCost(shipmentOption, cost);
     }
     
-    @Override
-    public String toString() {
-        return "MonetaryCostStrategy{" +
-                "materialCostPerGram=" + materialCostPerGram +
-                ", shipmentOption=" + shipmentOption +
-                '}';
-    }
 }

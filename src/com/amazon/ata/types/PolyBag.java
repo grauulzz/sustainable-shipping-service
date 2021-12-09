@@ -8,8 +8,10 @@ import java.util.Objects;
  */
 public class PolyBag extends Packaging {
     
-    private BigDecimal volume; private BigDecimal length;
-    private BigDecimal width; private BigDecimal height;
+    private final BigDecimal volume;
+    private BigDecimal length;
+    private BigDecimal width;
+    private BigDecimal height;
     
     /**
      * Instantiates a new Packaging object.
@@ -27,6 +29,12 @@ public class PolyBag extends Packaging {
         this.volume = length.multiply(width).multiply(height);
     }
     
+    /**
+     * Instantiates a new Poly bag.
+     *
+     * @param material the material
+     * @param volume   the volume
+     */
     public PolyBag(Material material, BigDecimal volume) {
         super(material);
         this.volume = volume;
@@ -49,25 +57,22 @@ public class PolyBag extends Packaging {
     
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         PolyBag polyBag = (PolyBag) o;
-        return getLength().equals(polyBag.getLength()) && getWidth().equals(polyBag.getWidth()) && getHeight().equals(polyBag.getHeight()) && getVolume().equals(polyBag.getVolume());
+        return getLength().equals(polyBag.getLength()) &&
+                getWidth().equals(polyBag.getWidth()) &&
+                getHeight().equals(polyBag.getHeight()) &&
+                getVolume().equals(polyBag.getVolume());
     }
     
     @Override
     public int hashCode() {
         return Objects.hash(getLength(), getWidth(), getHeight(), getVolume());
-    }
-    
-    @Override
-    public String toString() {
-        return "PolyBag{" +
-                "length=" + length +
-                ", width=" + width +
-                ", height=" + height +
-                ", volume=" + volume +
-                "} " + super.toString();
     }
     
     public BigDecimal getLength() {
@@ -86,3 +91,4 @@ public class PolyBag extends Packaging {
         return volume;
     }
 }
+

@@ -1,6 +1,11 @@
 package com.amazon.ata.datastore;
 
-import com.amazon.ata.types.*;
+import com.amazon.ata.types.Box;
+import com.amazon.ata.types.FcPackagingOption;
+import com.amazon.ata.types.FulfillmentCenter;
+import com.amazon.ata.types.Material;
+import com.amazon.ata.types.Packaging;
+import com.amazon.ata.types.PolyBag;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -28,25 +33,9 @@ public class PackagingDatastore {
             createFcPackagingOption("PDX1", Material.CORRUGATE, "40", "40", "40"),
             createFcPackagingOption("PDX1", Material.CORRUGATE, "60", "60", "60"),
             createFcPackagingOption("PDX1", Material.CORRUGATE, "60", "60", "60")
-//            createWithVolume("IAD2",Material.LAMINATED_PLASTIC,"5000"),
-//            createWithVolume("YOW4",Material.LAMINATED_PLASTIC,"2000"),
-//            createWithVolume("YOW4",Material.LAMINATED_PLASTIC,"5000"),
-//            createWithVolume("YOW4",Material.LAMINATED_PLASTIC,"10000"),
-//            createWithVolume("IND1",Material.LAMINATED_PLASTIC,"2000"),
-//            createWithVolume("IND1",Material.LAMINATED_PLASTIC,"5000"),
-//            createWithVolume("ABE2",Material.LAMINATED_PLASTIC,"2000"),
-//            createWithVolume("ABE2",Material.LAMINATED_PLASTIC,"6000"),
-//            createWithVolume("PDX1",Material.LAMINATED_PLASTIC,"5000"),
-//            createWithVolume("PDX1",Material.LAMINATED_PLASTIC,"10000"),
-//            createWithVolume("YOW4",Material.LAMINATED_PLASTIC,"5000")
 
     );
 
-    private FcPackagingOption createWithVolume(String fcCode, Material m, String vol) {
-        FulfillmentCenter ffc = new FulfillmentCenter(fcCode);
-        Packaging p = new PolyBag(m, new BigDecimal(vol));
-        return new FcPackagingOption(ffc, p);
-    }
     /**
      * Create fulfillment center packaging option from provided parameters.
      */

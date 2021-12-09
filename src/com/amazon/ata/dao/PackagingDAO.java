@@ -3,9 +3,18 @@ package com.amazon.ata.dao;
 import com.amazon.ata.datastore.PackagingDatastore;
 import com.amazon.ata.exceptions.NoPackagingFitsItemException;
 import com.amazon.ata.exceptions.UnknownFulfillmentCenterException;
-import com.amazon.ata.types.*;
+import com.amazon.ata.types.FcPackagingOption;
+import com.amazon.ata.types.FulfillmentCenter;
+import com.amazon.ata.types.Item;
+import com.amazon.ata.types.Packaging;
+import com.amazon.ata.types.ShipmentOption;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Access data for which packaging is available at which fulfillment center.
@@ -15,10 +24,11 @@ public class PackagingDAO {
     private final Set<FcPackagingOption> packagingOptionsSet;
     private final Map<FulfillmentCenter, Set<Packaging>> setMap;
     
+    
     /**
-     * Instantiates a PackagingDAO object.
+     * Instantiates a new Packaging dao.
      *
-     * @param datastore Where to pull the data from for fulfillment center/packaging available mappings.
+     * @param datastore the datastore
      */
     public PackagingDAO(PackagingDatastore datastore) {
         this.packagingOptionsSet = new HashSet<>(datastore.getFcPackagingOptions());
@@ -28,6 +38,15 @@ public class PackagingDAO {
                 .add(k.getPackaging()));
     }
     
+    /**
+     * Find shipment options list.
+     *
+     * @param item              the item
+     * @param fulfillmentCenter the fulfillment center
+     * @return the list
+     * @throws UnknownFulfillmentCenterException the unknown fulfillment center exception
+     * @throws NoPackagingFitsItemException      the no packaging fits item exception
+     */
     public List<ShipmentOption> findShipmentOptions(Item item, FulfillmentCenter fulfillmentCenter)
             throws UnknownFulfillmentCenterException, NoPackagingFitsItemException {
         

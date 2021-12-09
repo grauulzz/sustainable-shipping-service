@@ -1,7 +1,6 @@
 package com.amazon.ata.activity;
 
 import com.amazon.ata.service.ShipmentService;
-
 import com.amazon.ata.types.FulfillmentCenter;
 import com.amazon.ata.types.Item;
 import com.amazon.ata.types.ShipmentOption;
@@ -16,8 +15,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+/**
+ * The type Prepare shipment activity test.
+ */
 public class PrepareShipmentActivityTest {
-
+    @Mock
     private PrepareShipmentRequest request = PrepareShipmentRequest.builder()
         .withFcCode("fcCode")
         .withItemAsin("itemAsin")
@@ -29,14 +31,22 @@ public class PrepareShipmentActivityTest {
 
     @Mock
     private ShipmentService shipmentService;
-
+    
+    /**
+     * Sets up.
+     */
     @BeforeEach
     void setUp() {
         initMocks(this);
     }
-
+    
+    /**
+     * Handle request no available shipment option returns null.
+     *
+     * @throws Exception the exception
+     */
     @Test
-    public void handleRequest_noAvailableShipmentOption_returnsNull() throws Exception {
+    public void handleRequestNoAvailableShipmentOptionReturnsNull() throws Exception {
         // GIVEN
         PrepareShipmentActivity activity = new PrepareShipmentActivity(shipmentService);
         when(shipmentService.findShipmentOption(any(Item.class), any(FulfillmentCenter.class))).thenReturn(null);
@@ -47,9 +57,14 @@ public class PrepareShipmentActivityTest {
         // THEN
         assertNull(response);
     }
-
+    
+    /**
+     * Handle request available shipment option returns non empty response.
+     *
+     * @throws Exception the exception
+     */
     @Test
-    public void handleRequest_availableShipmentOption_returnsNonEmptyResponse() throws Exception {
+    public void handleRequestAvailableShipmentOptionReturnsNonEmptyResponse() throws Exception {
         // GIVEN
         // PrepareShipmentActivity activity = new PrepareShipmentActivity(shipmentService, dataConverter);
         PrepareShipmentActivity activity = new PrepareShipmentActivity(shipmentService);

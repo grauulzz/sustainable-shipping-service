@@ -17,6 +17,11 @@ public class Packaging {
      */
     private final Material material;
     
+    /**
+     * Instantiates a new Packaging.
+     *
+     * @param material the material
+     */
     public Packaging(Material material) {
         this.material = material;
     }
@@ -35,7 +40,6 @@ public class Packaging {
         return false;
     }
     
-    
     /**
      * Gets mass.
      *
@@ -52,3 +56,4 @@ public class Packaging {
                 '}';
     }
 }
+
