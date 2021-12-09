@@ -1,7 +1,6 @@
 package com.amazon.ata.cost;
 
 import com.amazon.ata.types.Material;
-import com.amazon.ata.types.Packaging;
 import com.amazon.ata.types.ShipmentCost;
 import com.amazon.ata.types.ShipmentOption;
 
@@ -9,27 +8,9 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-
-// --------------------blendedCost------------------------
-// the "team" came up with an 80/20 (CORR, LAMINATED) split based of what they decided was the best blended cost
-
-// ----carbonCost-vrs-monetaryCost----
-// cu = cu/g * mass
-
-// ----B2K_BOX----
-// CORR = 0.017cu/g
-// B2k = 17cu
-// B2k_cost = $5.43
-
-// ----P20_POLYBAG----
-// LP = 0.012cu/g
-// P20 = 0.324cu
-// P20_cost = $7.18
-
 public class WeightedCostStrategy implements CostStrategy {
     
     private Map<BigDecimal, CostStrategy> map;
-    private ShipmentOption shipmentOption;
     
     public WeightedCostStrategy(Map<BigDecimal, CostStrategy> map) {
         this.map = new HashMap<>();
@@ -40,45 +21,46 @@ public class WeightedCostStrategy implements CostStrategy {
     
     }
     
-    static boolean isOfTypeCarbonCost(CostStrategy input) {
-        return input instanceof CarbonCostStrategy; // won't compile
+    private static boolean isOfTypeCarbonCost(CostStrategy input) {
+        return input instanceof CarbonCostStrategy;
     }
     
-    static boolean isOfTypeMonetaryCost(CostStrategy input) {
-        return input instanceof MonetaryCostStrategy; // won't compile
+    private static boolean isOfTypeMonetaryCost(CostStrategy input) {
+        return input instanceof MonetaryCostStrategy;
     }
     
     @Override
     public ShipmentCost getCost(ShipmentOption shipmentOption) {
-        this.shipmentOption = shipmentOption;
         for (Map.Entry<BigDecimal, CostStrategy> entry : map.entrySet()) {
-            Packaging p = entry.getValue().getCost(shipmentOption).getShipmentOption().getPackaging();
+            Material material = entry.getValue().getCost(shipmentOption)
+                    .getShipmentOption().getPackaging().getMaterial();
             
-            Material m = p.getMaterial();
-            BigDecimal key = entry.getKey();
-            CostStrategy c = entry.getValue();
+            CostStrategy cs = entry.getValue();
+            BigDecimal scale = entry.getKey();
             
-            if (m == Material.CORRUGATE) {
-                if (isOfTypeMonetaryCost(c)) {
+            if (material == Material.CORRUGATE) {
+                if (isOfTypeMonetaryCost(cs)) {
                     return new ShipmentCost(shipmentOption,
-                            new MonetaryCostStrategy().getCost(shipmentOption).getCost().multiply(key)
+                            new MonetaryCostStrategy().getCost(shipmentOption).getCost().multiply(scale)
                                     .add(BigDecimal.valueOf(2.04)));
-                } else if (isOfTypeCarbonCost(c)) {
+                } else if (isOfTypeCarbonCost(cs)) {
                     return new ShipmentCost(shipmentOption,
-                            new CarbonCostStrategy().getCost(shipmentOption).getCost().multiply(key)
+                            new CarbonCostStrategy().getCost(shipmentOption).getCost().multiply(scale)
                                     .add(BigDecimal.valueOf(2.04)));
                 }
+                break;
                 
-            } else if (m == Material.LAMINATED_PLASTIC) {
-                if (isOfTypeMonetaryCost(c)) {
+            } else if (material == Material.LAMINATED_PLASTIC) {
+                if (isOfTypeMonetaryCost(cs)) {
                     return new ShipmentCost(shipmentOption,
-                            new MonetaryCostStrategy().getCost(shipmentOption).getCost().multiply(key)
+                            new MonetaryCostStrategy().getCost(shipmentOption).getCost().multiply(scale)
                                     .add(BigDecimal.valueOf(0.1296)));
-                } else if (isOfTypeCarbonCost(c)) {
+                } else if (isOfTypeCarbonCost(cs)) {
                     return new ShipmentCost(shipmentOption,
-                            new CarbonCostStrategy().getCost(shipmentOption).getCost().multiply(key)
+                            new CarbonCostStrategy().getCost(shipmentOption).getCost().multiply(scale)
                                     .add(BigDecimal.valueOf(0.1296)));
                 }
+                break;
                 
             }
             
