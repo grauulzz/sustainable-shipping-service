@@ -22,8 +22,9 @@ public class MonetaryCostStrategy implements CostStrategy {
 
     private static final BigDecimal LABOR_COST = BigDecimal.valueOf(0.43);
     private final Map<Material, BigDecimal> materialCostPerGram;
-
-
+    ShipmentOption shipmentOption;
+    
+    
     public MonetaryCostStrategy() {
         materialCostPerGram = new HashMap<>();
         materialCostPerGram.put(Material.CORRUGATE, BigDecimal.valueOf(.005));
@@ -32,6 +33,7 @@ public class MonetaryCostStrategy implements CostStrategy {
 
     @Override
     public ShipmentCost getCost(ShipmentOption shipmentOption) {
+        this.shipmentOption = shipmentOption;
         Packaging packaging = shipmentOption.getPackaging();
         BigDecimal materialCost = this.materialCostPerGram.get(packaging.getMaterial());
 
@@ -39,5 +41,13 @@ public class MonetaryCostStrategy implements CostStrategy {
             .add(LABOR_COST);
 
         return new ShipmentCost(shipmentOption, cost);
+    }
+    
+    @Override
+    public String toString() {
+        return "MonetaryCostStrategy{" +
+                "materialCostPerGram=" + materialCostPerGram +
+                ", shipmentOption=" + shipmentOption +
+                '}';
     }
 }

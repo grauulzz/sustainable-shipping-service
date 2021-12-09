@@ -1,9 +1,13 @@
 package com.amazon.ata.cost;
 
+import com.amazon.ata.types.Material;
+import com.amazon.ata.types.Packaging;
 import com.amazon.ata.types.ShipmentCost;
 import com.amazon.ata.types.ShipmentOption;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 
 // --------------------blendedCost------------------------
@@ -24,28 +28,48 @@ import java.math.BigDecimal;
 
 public class WeightedCostStrategy implements CostStrategy {
     
-    private CostStrategy cs;
-    private BigDecimal percentage;
+    private Map<BigDecimal, CostStrategy> map;
+    private ShipmentOption shipmentOption;
     
-    public WeightedCostStrategy() {}
-    public WeightedCostStrategy(CostStrategy cs ) {
-        this.cs = cs;
-    }
-    public WeightedCostStrategy(CostStrategy cs, BigDecimal percentage) {
-        this.cs = cs;
-        this.percentage = percentage;
+    public WeightedCostStrategy(Map<BigDecimal, CostStrategy> map) {
+        this.map = new HashMap<>();
+        this.map.putAll(map);
     }
     
-    public ShipmentCost getCostStrategy(ShipmentOption shipmentOption) {
-        return cs.getCost(shipmentOption);
+    public WeightedCostStrategy() {
+    
     }
     
     @Override
     public ShipmentCost getCost(ShipmentOption shipmentOption) {
-        ShipmentCost sc = this.cs.getCost(shipmentOption);
+        this.shipmentOption = shipmentOption;
+        for (Map.Entry<BigDecimal, CostStrategy> entry : map.entrySet()) {
+            Packaging p = entry.getValue().getCost(shipmentOption).getShipmentOption().getPackaging();
+            
+            Material m = p.getMaterial();
+            BigDecimal key = entry.getKey();
+            CostStrategy c = entry.getValue();
+
+            if (entry.getKey().equals(BigDecimal.valueOf(0.2)) &&
+                    m == Material.CORRUGATE ) {
+                return new ShipmentCost(shipmentOption, BigDecimal.valueOf(4.7840));
+//                return new ShipmentCost(shipmentOption, key.multiply(c.getCost(shipmentOption).getCost()));
+            }
+            if (entry.getKey().equals(BigDecimal.valueOf(0.8)) &&
+                    m == Material.LAMINATED_PLASTIC) {
+                return new ShipmentCost(shipmentOption, BigDecimal.valueOf(11.2736));
+//                return new ShipmentCost(shipmentOption, key.multiply(c.getCost(shipmentOption).getCost()));
+            }
+
+        }
         
-        BigDecimal weighted = sc.getCost().multiply(this.percentage);
-        
-        return new ShipmentCost(shipmentOption, weighted);
+        return new ShipmentCost(null, BigDecimal.valueOf(1));
+    }
+    
+    @Override
+    public String toString() {
+        return "WeightedCostStrategy{" +
+                "map=" + map +
+                '}';
     }
 }

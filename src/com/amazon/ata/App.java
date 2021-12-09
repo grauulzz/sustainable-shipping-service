@@ -1,7 +1,7 @@
 package com.amazon.ata;
 
 import com.amazon.ata.cost.CostStrategy;
-import com.amazon.ata.cost.MonetaryCostStrategy;
+import com.amazon.ata.cost.WeightedCostStrategy;
 import com.amazon.ata.dao.PackagingDAO;
 import com.amazon.ata.datastore.PackagingDatastore;
 import com.amazon.ata.service.ShipmentService;
@@ -19,7 +19,8 @@ public class App {
     }
 
     private static CostStrategy getCostStrategy() {
-        return new MonetaryCostStrategy();
+//        Map<BigDecimal, CostStrategy> map = new HashMap<>();
+        return new WeightedCostStrategy();
     }
 
     public static ShipmentService getShipmentService() {

@@ -124,4 +124,13 @@ public class ShipmentOption {
             return new ShipmentOption(this);
         }
     }
+    
+    @Override
+    public String toString() {
+        return "ShipmentOption{" +
+                "item=" + item +
+                ", packaging=" + packaging +
+                ", fulfillmentCenter=" + fulfillmentCenter +
+                '}';
+    }
 }

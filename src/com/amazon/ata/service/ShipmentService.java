@@ -16,54 +16,61 @@ import java.util.List;
  * by the PackagingDAO.
  */
 public class ShipmentService {
-
+    
     /**
      * PackagingDAO is used to retrieve all valid shipment options for a given fulfillment center and item.
      */
-    private PackagingDAO dao;
-
+    private PackagingDAO packagingDAO;
+    
     /**
      * A CostStrategy used to calculate the relative cost of a ShipmentOption.
      */
-    private CostStrategy c;
-
+    private CostStrategy costStrategy;
+    
     /**
      * Instantiates a new ShipmentService object.
-     * @param dao packaging data access object used to retrieve all available shipment options
-     * @param c cost strategy used to calculate the relative cost of a shipment option
+     * @param packagingDAO packaging data access object used to retrieve all available shipment options
+     * @param costStrategy cost strategy used to calculate the relative cost of a shipment option
      */
-    public ShipmentService(PackagingDAO dao, CostStrategy c) {
-        this.dao = dao;
-        this.c = c;
+    public ShipmentService(PackagingDAO packagingDAO, CostStrategy costStrategy) {
+        this.packagingDAO = packagingDAO;
+        this.costStrategy = costStrategy;
     }
     /**
      * Finds the shipment option for the given item and fulfillment center with the lowest cost.
      *
      * @param item the item to package
-     * @param center fulfillment center in which to look for the packaging
+     * @param fulfillmentCenter fulfillment center in which to look for the packaging
      * @return the lowest cost shipment option for the item and fulfillment center, or null if none found
      */
-    public ShipmentOption findShipmentOption(final Item item, final FulfillmentCenter center) {
+    public ShipmentOption findShipmentOption(final Item item, final FulfillmentCenter fulfillmentCenter) {
         try {
-            List<ShipmentOption> results = this.dao.findShipmentOptions(item, center);
-            return getLowestCostOpt(results);
+            List<ShipmentOption> results = this.packagingDAO.findShipmentOptions(item, fulfillmentCenter);
+            return getLowestCostShipmentOption(results);
         } catch (Exception e) {
             return null;
         }
     }
     
-    // sorts list of shipment opts and returns the first index
-    private ShipmentOption getLowestCostOpt(List<ShipmentOption> results) {
-        List<ShipmentCost> costs = applyCostStrategy(results);
-        Collections.sort(costs);
-        return costs.get(0).getShipmentOption();
+    private ShipmentOption getLowestCostShipmentOption(List<ShipmentOption> results) {
+        List<ShipmentCost> shipmentCosts = applyCostStrategy(results);
+        Collections.sort(shipmentCosts);
+        return shipmentCosts.get(0).getShipmentOption();
     }
-
+    
     private List<ShipmentCost> applyCostStrategy(List<ShipmentOption> results) {
-        List<ShipmentCost> costs = new ArrayList<>();
+        List<ShipmentCost> shipmentCosts = new ArrayList<>();
         for (ShipmentOption option : results) {
-            costs.add(c.getCost(option));
+            shipmentCosts.add(costStrategy.getCost(option));
         }
-        return costs;
+        return shipmentCosts;
+    }
+    
+    @Override
+    public String toString() {
+        return "ShipmentService{" +
+                "packagingDAO=" + packagingDAO +
+                ", costStrategy=" + costStrategy +
+                '}';
     }
 }
