@@ -17,7 +17,7 @@ public class PackagingTest {
 
     @BeforeEach
     public void setUp() {
-        packaging = new Box(packagingMaterial, packagingLength, packagingWidth, packagingHeight);
+        packaging = new Packaging(packagingMaterial);
     }
 
     @Test
@@ -97,43 +97,27 @@ public class PackagingTest {
         boolean canFit = packaging.canFitItem(item);
 
         // THEN
-        assertTrue(canFit, "Item smaller than the package should fit in the package.");
-    }
-
-    @Test
-    public void getMass_calculatesMass_returnsCorrectMass() {
-        // GIVEN
-        packaging = new Box(Material.CORRUGATE, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.valueOf(20));
-
-        // WHEN
-        BigDecimal mass = packaging.getMass();
-
-        // THEN
-        assertEquals(BigDecimal.valueOf(1000), mass,
-            "Item smaller than the box should fit in the package.");
+        assertFalse(canFit,
+                "Packaging only class should not have a mass until instantiated as some type of Packaging");
     }
 
     @Test
     public void equals_sameObject_isTrue() {
-        // GIVEN
-        Packaging packaging = new Box(Material.CORRUGATE, packagingLength, packagingWidth, packagingHeight);
 
         // WHEN
         boolean result = packaging.equals(packaging);
 
-        // THEN
+        // WHEN + THEN
         assertTrue(result, "An object should be equal with itself.");
     }
 
     @Test
     public void equals_nullObject_returnsFalse() {
-        // GIVEN
-        Packaging packaging = new Box(Material.CORRUGATE, packagingLength, packagingWidth, packagingHeight);
 
-        // WHEN
+        // GIVEN
         boolean isEqual = packaging.equals(null);
 
-        // THEN
+        // WHEN + THEN
         assertFalse(isEqual, "A Packaging should not be equal with null.");
     }
 
@@ -151,25 +135,14 @@ public class PackagingTest {
     }
 
     @Test
-    public void equals_sameAttributes_returnsTrue() {
+    public void hashCode_equalObjects_returnsNotEqual() {
         // GIVEN
-        Packaging packaging = new Box(Material.CORRUGATE, packagingLength, packagingWidth, packagingHeight);
-        Object other = new Box(Material.CORRUGATE, packagingLength, packagingWidth, packagingHeight);
-
-        // WHEN
-        boolean isEqual = packaging.equals(other);
-
-        // THEN
-        assertTrue(isEqual, "Packaging with the same attributes should be equal.");
-    }
-
-    @Test
-    public void hashCode_equalObjects_equalHash() {
-        // GIVEN
-        Packaging packaging = new Box(Material.CORRUGATE, packagingLength, packagingWidth, packagingHeight);
-        Packaging other = new Box(Material.CORRUGATE, packagingLength, packagingWidth, packagingHeight);
+        Packaging packaging = new Packaging(Material.CORRUGATE);
+        Packaging other = new Packaging(Material.CORRUGATE);
 
         // WHEN + THEN
-        assertEquals(packaging.hashCode(), other.hashCode(), "Equal objects should have equal hashCodes");
+        assertNotEquals(packaging.hashCode(), other.hashCode(),
+                "Packing parent class should not be comparable by hashcode, only the child class should" +
+                        "be comparable");
     }
 }
