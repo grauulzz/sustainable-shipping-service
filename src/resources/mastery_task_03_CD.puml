@@ -1,8 +1,6 @@
 @startuml
 title Sustainable Packaging Service
 
-'https://tiny.amazon.com/vjm4xbw7/plancorpamazplanformencohtml
-
 class ShipmentService {
   + findShipmentOption(Item, FulfillmentCenter) : ShipmentOption
 }
