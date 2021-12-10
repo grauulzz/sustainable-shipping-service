@@ -1,13 +1,11 @@
 package com.amazon.ata.cost;
 
 import com.amazon.ata.types.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
-import java.math.BigDecimal;
+import java.math.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MonetaryCostStrategyTest {
 
@@ -34,8 +32,8 @@ public class MonetaryCostStrategyTest {
         ShipmentCost shipmentCost = strategy.getCost(option);
 
         // THEN
-        assertTrue(BigDecimal.valueOf(5.43).compareTo(shipmentCost.getCost()) == 0,
-            "Incorrect monetary cost calculation for a box with dimensions 10x10x20.");
+        assertEquals(0, BigDecimal.valueOf(5.43).compareTo(shipmentCost.getCost()),
+                "Incorrect monetary cost calculation for a box with dimensions 10x10x20.");
     }
     
     @Test
