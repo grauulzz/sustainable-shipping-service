@@ -54,5 +54,5 @@ public class ShipmentCost implements Comparable<ShipmentCost> {
     public int compareTo(ShipmentCost other) {
         return cost.compareTo(other.cost);
     }
-
+    
 }
