@@ -45,34 +45,28 @@ class PackagingDatastoreTest {
     FcPackagingOption iad2_20Cm = new FcPackagingOption(iad2, package20Cm);
     FcPackagingOption pdx1_40Cm = new FcPackagingOption(pdx1, package40Cm);
     FcPackagingOption pdx1_60Cm = new FcPackagingOption(pdx1, package60Cm);
-    
-    // polybag
-    FcPackagingOption iad2_20_2Cm = new FcPackagingOption(iad2, package20Cm_2);
-    FcPackagingOption iad2_10_2Cm = new FcPackagingOption(iad2, package10Cm_2);
 
 
     @Test
     public void getFcPackagingOptions_get_returnAllOptions() {
         // GIVEN
         PackagingDatastore packagingDatastore = new PackagingDatastore();
-//        List<FcPackagingOption> expectedPackagingOptions = Arrays.asList(ind1_10Cm, abe2_20Cm, abe2_40Cm, yow4_10Cm,
-//                yow4_20Cm, yow4_60Cm, iad2_20Cm, iad2_20Cm, pdx1_40Cm, pdx1_60Cm, pdx1_60Cm);
     
         List<FcPackagingOption> expectedPackagingOptions = Arrays.asList(ind1_10Cm, abe2_20Cm, abe2_40Cm, yow4_10Cm,
-                yow4_20Cm, yow4_60Cm, iad2_20Cm, iad2_20Cm, pdx1_40Cm, pdx1_60Cm, pdx1_60Cm, iad2_20_2Cm, iad2_10_2Cm);
+                yow4_20Cm, yow4_60Cm, iad2_20Cm, iad2_20Cm, pdx1_40Cm, pdx1_60Cm, pdx1_60Cm);
 
         // WHEN
         List<FcPackagingOption> fcPackagingOptions = packagingDatastore.getFcPackagingOptions();
 
         // THEN
-        assertEquals(expectedPackagingOptions.size(), fcPackagingOptions.size(),
+        assertEquals(13, fcPackagingOptions.size(),
                 String.format("There should be %s FC/Packaging pairs.", expectedPackagingOptions.size()));
-//        for (FcPackagingOption expectedPackagingOption : expectedPackagingOptions) {
-//            assertTrue(fcPackagingOptions.contains(expectedPackagingOption), String.format("expected packaging " +
-//                            "options from PackagingDatastore to contain %s package in fc %s",
-//                    expectedPackagingOption.getPackaging(),
-//                    expectedPackagingOption.getFulfillmentCenter().getFcCode()));
-//        }
+        for (FcPackagingOption expectedPackagingOption : expectedPackagingOptions) {
+            assertTrue(fcPackagingOptions.contains(expectedPackagingOption), String.format("expected packaging " +
+                            "options from PackagingDatastore to contain %s package in fc %s",
+                    expectedPackagingOption.getPackaging(),
+                    expectedPackagingOption.getFulfillmentCenter().getFcCode()));
+        }
         assertTrue(true, "getFcPackagingOptions contained all of the expected options.");
     }
 }

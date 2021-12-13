@@ -4,15 +4,14 @@ import com.amazon.ata.datastore.PackagingDatastore;
 import com.amazon.ata.exceptions.NoPackagingFitsItemException;
 import com.amazon.ata.exceptions.UnknownFulfillmentCenterException;
 import com.amazon.ata.types.*;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PackagingDAOTest {
     
@@ -43,6 +42,38 @@ class PackagingDAOTest {
     private PackagingDAO packagingDAO;
     Map<FulfillmentCenter, Set<Packaging>> setMap;
     Map<FulfillmentCenter, Set<Packaging>> setMap2;
+
+    @Test
+    public void newPackagingDao_ensureMapAcceptsFc_returnsTrue() {
+        packagingDAO = new PackagingDAO(datastore);
+
+        // GIVEN + WHEN + THEN
+        assertTrue(packagingDAO.getSetMap().containsKey(iad2));
+    }
+
+
+    @Test
+    public void newPackagingDao_ensureMapRejectsDupedFc_returnsTrue() {
+        packagingDAO = new PackagingDAO(datastore);
+
+        // GIVEN + WHEN + THEN
+        assertEquals(6, packagingDAO.getSetMap().size());
+    }
+
+    @Test
+    public void getMapSize_ensureBucketAcceptsMultipleFcOptsPerKey_returnsEqual() {
+        packagingDAO = new PackagingDAO(datastore);
+
+        // GIVEN
+        Set<Packaging> p = packagingDAO.getSetMap().get(abe2);
+
+        List<FcPackagingOption> filteredFcAbe2 = datastore.getFcPackagingOptions().stream()
+                .filter(fcPackagingOption -> fcPackagingOption.getFulfillmentCenter()
+                        .equals(abe2)).collect(Collectors.toList());
+
+        // WHEN + THEN
+        assertEquals(filteredFcAbe2.size(), p.size());
+    }
     
     @Test
     public void whenAddingDiffPackagingDimensions_withSameFulfillmentCenter_returnsTwoDiffMapEntries() {
@@ -64,24 +95,24 @@ class PackagingDAOTest {
         Assertions.assertEquals(2, setMap.size());
     }
     
-//    @Test
-//    public void diffPackagingOptions_withSameFulfillmentCenter_returnsTwoDiffMapEntries() {
-//        // GIVEN
-//        setMap = new HashMap<>();
-//        Packaging pack = new PolyBag(Material.LAMINATED_PLASTIC,
-//                BigDecimal.valueOf(10000));
-//
-//        Packaging pack2 = new PolyBag(Material.LAMINATED_PLASTIC,
-//                BigDecimal.valueOf(2000));
-//
-//        Set<Packaging> set1 = new HashSet<>(Collections.singleton(pack));
-//        Set<Packaging> set2 = new HashSet<>(Collections.singleton(pack2));
-//        // WHEN
-//        setMap.put(iad2, set1);
-//        setMap.put(iad2, set2);
-//        // THEN
-//        Assertions.assertEquals(1, setMap.size());
-//    }
+    @Test
+    public void diffPackagingOptions_withSameFulfillmentCenter_returnsTwoDiffMapEntries() {
+        // GIVEN
+        setMap = new HashMap<>();
+        Packaging pack = new PolyBag(Material.LAMINATED_PLASTIC,
+                BigDecimal.valueOf(10000));
+
+        Packaging pack2 = new PolyBag(Material.LAMINATED_PLASTIC,
+                BigDecimal.valueOf(2000));
+
+        Set<Packaging> set1 = new HashSet<>(Collections.singleton(pack));
+        Set<Packaging> set2 = new HashSet<>(Collections.singleton(pack2));
+        // WHEN
+        setMap.put(iad2, set1);
+        setMap.put(iad2, set2);
+        // THEN
+        Assertions.assertEquals(1, setMap.size());
+    }
     
     @Test
     public void whenHashCodeIsCalledOnPackaging_withDiffDimensions_thenDiffHashcode() {

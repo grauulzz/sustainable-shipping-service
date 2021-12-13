@@ -1,15 +1,12 @@
 package com.amazon.ata.service;
 
-import com.amazon.ata.cost.CostStrategy;
-import com.amazon.ata.dao.PackagingDAO;
-import com.amazon.ata.types.FulfillmentCenter;
-import com.amazon.ata.types.Item;
-import com.amazon.ata.types.ShipmentCost;
-import com.amazon.ata.types.ShipmentOption;
+import com.amazon.ata.cost.*;
+import com.amazon.ata.dao.*;
+import com.amazon.ata.exceptions.*;
+import com.amazon.ata.types.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.*;
 
 /**
  * This class is responsible for finding the appropriate shipment option from all available options returned
@@ -26,7 +23,9 @@ public class ShipmentService {
      * A CostStrategy used to calculate the relative cost of a ShipmentOption.
      */
     private CostStrategy costStrategy;
-    
+
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_RESET = "\033[0m";  // Text Reset
     /**
      * Instantiates a new ShipmentService object.
      * @param packagingDAO packaging data access object used to retrieve all available shipment options
@@ -43,15 +42,39 @@ public class ShipmentService {
      * @param fulfillmentCenter fulfillment center in which to look for the packaging
      * @return the lowest cost shipment option for the item and fulfillment center, or null if none found
      */
-    public ShipmentOption findShipmentOption(final Item item, final FulfillmentCenter fulfillmentCenter) {
+    public ShipmentOption findShipmentOption(final Item item,
+                                             final FulfillmentCenter fulfillmentCenter) throws RuntimeException {
         try {
-            List<ShipmentOption> results = this.packagingDAO.findShipmentOptions(item, fulfillmentCenter);
-            return getLowestCostShipmentOption(results);
-        } catch (Exception e) {
-            return null;
+            List<ShipmentOption> opts = Collections.singletonList(getLowestCostShipmentOption(packagingDAO
+                    .findShipmentOptions(item, fulfillmentCenter)
+                    .stream()
+                    .takeWhile(Objects::nonNull)
+                    .collect(Collectors.toList())));
+
+            return getLowestCostShipmentOption(opts);
+
+        } catch (RuntimeException | NoPackagingFitsItemException | UnknownFulfillmentCenterException e) {
+            e.printStackTrace();
         }
+
+        return null;
     }
-    
+
+//    public ShipmentOption findShipmentOption(final Item item,
+//                                             final FulfillmentCenter fulfillmentCenter) throws RuntimeException {
+//
+//        try {
+//            List<ShipmentOption> results = this.packagingDAO.findShipmentOptions(item, fulfillmentCenter);
+//            return getLowestCostShipmentOption(results);
+//        } catch (UnknownFulfillmentCenterException e) {
+//            e.printStackTrace();
+//        } catch (NoPackagingFitsItemException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return null;
+//    }
+
     private ShipmentOption getLowestCostShipmentOption(List<ShipmentOption> results) {
         List<ShipmentCost> shipmentCosts = applyCostStrategy(results);
         Collections.sort(shipmentCosts);

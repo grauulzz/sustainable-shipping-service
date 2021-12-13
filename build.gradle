@@ -29,25 +29,16 @@ tasks.withType(Checkstyle) {
     }
 }
 
-jacocoTestReport {
-    reports {
-        xml.required = false
-        csv.required = false
-        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
-    }
-}
-
 check.dependsOn jacocoTestCoverageVerification
 jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = 0.80
+                minimum = 0.78
             }
         }
     }
 }
-
 
 // for use with the Gradle Java Plugin
 sourceSets {

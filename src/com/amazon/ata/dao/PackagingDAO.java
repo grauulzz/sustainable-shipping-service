@@ -1,20 +1,10 @@
 package com.amazon.ata.dao;
 
-import com.amazon.ata.datastore.PackagingDatastore;
-import com.amazon.ata.exceptions.NoPackagingFitsItemException;
-import com.amazon.ata.exceptions.UnknownFulfillmentCenterException;
-import com.amazon.ata.types.FcPackagingOption;
-import com.amazon.ata.types.FulfillmentCenter;
-import com.amazon.ata.types.Item;
-import com.amazon.ata.types.Packaging;
-import com.amazon.ata.types.ShipmentOption;
+import com.amazon.ata.datastore.*;
+import com.amazon.ata.exceptions.*;
+import com.amazon.ata.types.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Access data for which packaging is available at which fulfillment center.
@@ -44,27 +34,25 @@ public class PackagingDAO {
      * @param item              the item
      * @param fulfillmentCenter the fulfillment center
      * @return the list
-     * @throws UnknownFulfillmentCenterException the unknown fulfillment center exception
-     * @throws NoPackagingFitsItemException      the no packaging fits item exception
      */
     public List<ShipmentOption> findShipmentOptions(Item item, FulfillmentCenter fulfillmentCenter)
             throws UnknownFulfillmentCenterException, NoPackagingFitsItemException {
         
         List<ShipmentOption> result = new ArrayList<>();
         boolean fcFound = false;
-        
+
         if (setMap.containsKey(fulfillmentCenter)) {
             for (Map.Entry<FulfillmentCenter, Set<Packaging>> entry : setMap.entrySet()) {
                 if (entry.getKey().equals(fulfillmentCenter)) {
                     fcFound = true;
-                    entry.getValue().forEach(value -> {
-                        if (value.canFitItem(item)) {
-                            result.add(ShipmentOption.builder()
-                                    .withItem(item)
-                                    .withPackaging(value)
-                                    .withFulfillmentCenter(fulfillmentCenter)
-                                    .build());
-                        }
+                    entry.getValue().stream().filter(value -> value.canFitItem(item)).forEach(value -> {
+
+                        result.add(ShipmentOption.builder()
+                                .withItem(item)
+                                .withPackaging(value)
+                                .withFulfillmentCenter(entry.getKey())
+                                .build());
+
                     });
                 }
             }
@@ -80,12 +68,12 @@ public class PackagingDAO {
             throw new NoPackagingFitsItemException(
                     String.format("No packaging at %s fits %s!", fulfillmentCenter.getFcCode(), item));
         }
-        
+
         return result;
     }
     
     public Map<FulfillmentCenter, Set<Packaging>> getSetMap() {
         return setMap;
     }
-    
+
 }

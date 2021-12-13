@@ -1,13 +1,20 @@
 package com.amazon.ata.cost;
 
-import com.amazon.ata.types.*;
-import org.junit.jupiter.api.*;
+import com.amazon.ata.types.Box;
+import com.amazon.ata.types.Material;
+import com.amazon.ata.types.Packaging;
+import com.amazon.ata.types.PolyBag;
+import com.amazon.ata.types.ShipmentCost;
+import com.amazon.ata.types.ShipmentOption;
 
-import java.math.*;
+import java.math.BigDecimal;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WeightedCostStrategyTest {
+
 
     private static final Packaging BOX_10x10x20 =
             new Box(Material.CORRUGATE, BigDecimal.valueOf(10),
