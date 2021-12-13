@@ -57,14 +57,13 @@ public class PrepareShipmentActivityTest {
         // THEN
         assertNull(response);
     }
-    
+
+
     /**
      * Handle request available shipment option returns non empty response.
-     *
-     * @throws Exception the exception
      */
     @Test
-    public void handleRequestAvailableShipmentOptionReturnsNonEmptyResponse() throws Exception {
+    public void handleRequestAvailableShipmentOptionReturnsNonEmptyResponse() {
         // GIVEN
         // PrepareShipmentActivity activity = new PrepareShipmentActivity(shipmentService, dataConverter);
         PrepareShipmentActivity activity = new PrepareShipmentActivity(shipmentService);

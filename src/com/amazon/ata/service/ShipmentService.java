@@ -24,8 +24,6 @@ public class ShipmentService {
      */
     private CostStrategy costStrategy;
 
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_RESET = "\033[0m";  // Text Reset
     /**
      * Instantiates a new ShipmentService object.
      * @param packagingDAO packaging data access object used to retrieve all available shipment options
@@ -54,26 +52,12 @@ public class ShipmentService {
             return getLowestCostShipmentOption(opts);
 
         } catch (RuntimeException | NoPackagingFitsItemException | UnknownFulfillmentCenterException e) {
-            e.printStackTrace();
+            e.getCause();
         }
 
         return null;
     }
 
-//    public ShipmentOption findShipmentOption(final Item item,
-//                                             final FulfillmentCenter fulfillmentCenter) throws RuntimeException {
-//
-//        try {
-//            List<ShipmentOption> results = this.packagingDAO.findShipmentOptions(item, fulfillmentCenter);
-//            return getLowestCostShipmentOption(results);
-//        } catch (UnknownFulfillmentCenterException e) {
-//            e.printStackTrace();
-//        } catch (NoPackagingFitsItemException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return null;
-//    }
 
     private ShipmentOption getLowestCostShipmentOption(List<ShipmentOption> results) {
         List<ShipmentCost> shipmentCosts = applyCostStrategy(results);
