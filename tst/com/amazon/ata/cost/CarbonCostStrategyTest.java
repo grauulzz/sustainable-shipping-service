@@ -1,11 +1,17 @@
 package com.amazon.ata.cost;
 
-import com.amazon.ata.types.*;
-import org.junit.jupiter.api.*;
+import com.amazon.ata.types.Box;
+import com.amazon.ata.types.Material;
+import com.amazon.ata.types.Packaging;
+import com.amazon.ata.types.PolyBag;
+import com.amazon.ata.types.ShipmentCost;
+import com.amazon.ata.types.ShipmentOption;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import java.math.*;
+import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CarbonCostStrategyTest {
     private static final Packaging BOX_10x10x20 =

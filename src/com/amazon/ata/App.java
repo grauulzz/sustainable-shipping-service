@@ -8,7 +8,8 @@ import com.amazon.ata.service.ShipmentService;
 
 public class App {
     /* don't instantiate me */
-    private App() {}
+    private App() {
+    }
 
     private static PackagingDatastore getPackagingDatastore() {
         return new PackagingDatastore();
@@ -25,5 +26,5 @@ public class App {
     public static ShipmentService getShipmentService() {
         return new ShipmentService(getPackagingDAO(), getCostStrategy());
     }
-    
+
 }

@@ -1,13 +1,39 @@
 package com.amazon.ata.cost;
 
-import com.amazon.ata.types.*;
-import org.junit.jupiter.api.*;
+import com.amazon.ata.test.reflect.MethodInvoker;
+import com.amazon.ata.test.reflect.MethodQuery;
+import com.amazon.ata.types.Box;
+import com.amazon.ata.types.Material;
+import com.amazon.ata.types.Packaging;
+import com.amazon.ata.types.PackagingFactory;
+import com.amazon.ata.types.PolyBag;
+import com.amazon.ata.types.ShipmentCost;
+import com.amazon.ata.types.ShipmentOption;
+import com.amazon.ata.types.ShipmentOptionFactory;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
-import java.math.*;
+import java.math.BigDecimal;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import tct.ProjectClassFactory;
+import tct.basewrappers.BoxWrapper;
+import tct.basewrappers.CarbonCostStrategyWrapper;
+import tct.basewrappers.MonetaryCostStrategyWrapper;
+import tct.basewrappers.PolyBagWrapper;
+import tct.basewrappers.ShipmentCostWrapper;
+import tct.basewrappers.ShipmentOptionWrapper;
+import tct.basewrappers.WeightedCostStrategyWrapper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.amazon.ata.test.assertions.AtaAssertions.assertClose;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class WeightedCostStrategyTest {
+
+    private MonetaryCostStrategyWrapper monetaryCostStrategyWrapper = new MonetaryCostStrategyWrapper();
+    private CarbonCostStrategyWrapper carbonCostStrategyWrapper = new CarbonCostStrategyWrapper();
 
     private static final Packaging BOX_10x10x20 =
             new Box(Material.CORRUGATE, BigDecimal.valueOf(10),

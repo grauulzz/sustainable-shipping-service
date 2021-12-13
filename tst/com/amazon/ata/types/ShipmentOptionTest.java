@@ -148,7 +148,8 @@ class ShipmentOptionTest {
         int otherHashCode = other.hashCode();
 
         // THEN
-        assertNotEquals(shipmentOptionHashCode, otherHashCode, "Different items should have different hashCodes");
+        assertNotEquals(shipmentOptionHashCode,
+                otherHashCode, "Different items should have different hashCodes");
     }
 
     @Test
