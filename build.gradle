@@ -28,27 +28,13 @@ tasks.withType(Checkstyle) {
         html.enabled true
     }
 }
-jacocoTestReport {
-    reports {
-        xml.required = false
-        csv.required = false
-        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
-    }
-}
 
 check.dependsOn jacocoTestCoverageVerification
 jacocoTestCoverageVerification {
     violationRules {
         rule {
-            includes = [
-                    'com.amazon.ata.types.Box',
-                    'com.amazon.ata.types.Packaging',
-                    'com.amazon.ata.types.PolyBag',
-                    'com.amazon.ata.types.Item',
-
-            ]
             limit {
-                minimum = 0.4
+                minimum = 0.80
             }
         }
     }
@@ -66,7 +52,7 @@ sourceSets {
     }
     test {
         java {
-            srcDirs = ['tst']
+            srcDirs = ['tst/']
         }
         resources {
             srcDirs = ['tst/resources/']
@@ -115,9 +101,6 @@ dependencies {
 }
 
 test {
-//    filter {
-//        excludeTestsMatching "*.MT7*"
-//    }
     useJUnitPlatform()
 
     testlogger {

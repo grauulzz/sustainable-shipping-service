@@ -22,7 +22,7 @@ public class PrepareShipmentActivity
     /**
      * Shipment service used to retrieve shipment options.
      */
-    private ShipmentService shipmentService;
+    private final ShipmentService shipmentService;
 
     /**
      * Instantiates a new PrepareShipmentActivity object.

@@ -6,7 +6,7 @@ import java.util.Objects;
 public class PrepareShipmentRequest {
     
     /**
-     * The item's unique identifier - asing - (Amazon Standard Identification Number - 10 alphanumeric characters).
+     * The item's unique identifier - asin - (Amazon Standard Identification Number - 10 alphanumeric characters).
      */
     private String asin;
     /**
@@ -35,38 +35,9 @@ public class PrepareShipmentRequest {
     private String fcCode;
     
     
-    /**
-     * Instantiates a new Prepare shipment request.
-     */
-    public PrepareShipmentRequest() {
-        this.asin = "0000000000";
-        this.description = "Frank Test Default Item - should not ever be needed - only used for testing";
-        this.length = new BigDecimal(0);
-        this.width = new BigDecimal(0);
-        this.height = new BigDecimal(0);
-        this.fcCode = "IND1";
-    }
+
     
-    
-    /**
-     * Instantiates a new Prepare shipment request.
-     *
-     * @param asin        the asin
-     * @param description the description
-     * @param length      the length
-     * @param width       the width
-     * @param height      the height
-     * @param fcCode      the fc code
-     */
-    public PrepareShipmentRequest(String asin, String description, BigDecimal length, BigDecimal width,
-                                  BigDecimal height, String fcCode) {
-        this.asin = asin;
-        this.description = description;
-        this.length = length;
-        this.width = width;
-        this.height = height;
-        this.fcCode = fcCode;
-    }
+
     
     /**
      * Instantiates a new Prepare shipment request.
@@ -86,18 +57,12 @@ public class PrepareShipmentRequest {
         return asin;
     }
     
-    public void setAsin(String asin) {
-        this.asin = asin;
-    }
-    
+
     public String getDescription() {
         return description;
     }
     
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    
+
     public BigDecimal getLength() {
         return length;
     }
@@ -126,10 +91,7 @@ public class PrepareShipmentRequest {
         return fcCode;
     }
     
-    public void setFcCode(String fcCode) {
-        this.fcCode = fcCode;
-    }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -150,23 +112,12 @@ public class PrepareShipmentRequest {
     public int hashCode() {
         return Objects.hash(getAsin(), getDescription(), getLength(), getWidth(), getHeight(), getFcCode());
     }
-    
-    @Override
-    public String toString() {
-        return "PrepareShipmentRequest{" +
-                "asin='" + asin + '\'' +
-                ", description='" + description + '\'' +
-                ", length=" + length +
-                ", width=" + width +
-                ", height=" + height +
-                ", fcCode='" + fcCode + '\'' +
-                '}';
-    }
+
     
     /**
      * Returns a new PrepareShipmentActivity.Builder object for constructing an Item.
      *
-     * @return new builder ready for constructing a PrepeareShimentActivity
+     * @return new builder ready for constructing a PrepareShipmentActivity
      */
     public static Builder builder() {
         return new Builder();
