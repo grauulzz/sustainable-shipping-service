@@ -1,12 +1,18 @@
 package com.amazon.ata.service;
 
-import com.amazon.ata.cost.*;
-import com.amazon.ata.dao.*;
-import com.amazon.ata.exceptions.*;
-import com.amazon.ata.types.*;
+import com.amazon.ata.cost.CostStrategy;
+import com.amazon.ata.dao.PackagingDAO;
+import com.amazon.ata.exceptions.NoPackagingFitsItemException;
+import com.amazon.ata.exceptions.UnknownFulfillmentCenterException;
+import com.amazon.ata.types.FulfillmentCenter;
+import com.amazon.ata.types.Item;
+import com.amazon.ata.types.ShipmentCost;
+import com.amazon.ata.types.ShipmentOption;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 
 /**
  * This class is responsible for finding the appropriate shipment option from all available options returned

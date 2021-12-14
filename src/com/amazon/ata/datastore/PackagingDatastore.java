@@ -37,7 +37,14 @@ public class PackagingDatastore {
     );
 
     /**
-     * Create fulfillment center packaging option from provided parameters.
+     * Create fc packaging option fc packaging option.
+     *
+     * @param fcCode   the fc code
+     * @param material the material
+     * @param length   the length
+     * @param width    the width
+     * @param height   the height
+     * @return the fc packaging option
      */
     public FcPackagingOption createFcPackagingOption(String fcCode, Material material,
                                                       String length, String width, String height) {
@@ -55,7 +62,7 @@ public class PackagingDatastore {
             p = new Box(material, new BigDecimal(length), new BigDecimal(width), new BigDecimal(height));
             return new FcPackagingOption(fulfillmentCenter, p);
         }
-        
+
         return null;
     }
     
