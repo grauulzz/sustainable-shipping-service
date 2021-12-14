@@ -52,21 +52,6 @@ class ShipmentServiceTest {
                 .ofNullable(shipmentService.findShipmentOption(smallItem, null))
                 .orElseThrow(RuntimeException::new));
     }
-    
-    @Test
-    public void nonExistentFc_whenClientProvidesUnknownFc_throwsUnknownFulfillmentCenterException()  {
-        Assertions.assertThrows(UnknownFulfillmentCenterException.class, () -> Optional
-                .ofNullable(shipmentService.findShipmentOption(smallItem, nonExistentFC))
-                .orElseThrow(UnknownFulfillmentCenterException::new));
-    }
-
-    @Test
-    public void nullItem_whenClientProvidesNullItem_throwsNoPackagingException() {
-        Assertions.assertThrows(NoPackagingFitsItemException.class, () -> Optional
-                .ofNullable(shipmentService.findShipmentOption(null, existentFC))
-                .orElseThrow(NoPackagingFitsItemException::new));
-    }
-
 
     @Test
     void findBestShipmentOption_existentFCAndItemCanFit_returnsShipmentOption() {
@@ -80,27 +65,15 @@ class ShipmentServiceTest {
     @Test
     void findBestShipmentOption_existentFCAndItemCannotFit_returnsShipmentOption() {
         // GIVEN & WHEN
-        ShipmentOption shipmentOption = shipmentService.findShipmentOption(largeItem, existentFC);
 
-        // THEN
-        Assertions.assertNull(shipmentOption);
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            //Code under test
+            shipmentService.findShipmentOption(largeItem, existentFC);
+            shipmentService.findShipmentOption(smallItem, nonExistentFC);
+            shipmentService.findShipmentOption(largeItem, nonExistentFC);
+        });
+
     }
 
-    @Test
-    void findBestShipmentOption_nonExistentFCAndItemCanFit_returnsShipmentOption() {
-        // GIVEN & WHEN
-        ShipmentOption shipmentOption = shipmentService.findShipmentOption(smallItem, nonExistentFC);
 
-        // THEN
-        Assertions.assertNull(shipmentOption);
-    }
-
-    @Test
-    void findBestShipmentOption_nonExistentFCAndItemCannotFit_returnsShipmentOption() {
-        // GIVEN & WHEN
-        ShipmentOption shipmentOption = shipmentService.findShipmentOption(largeItem, nonExistentFC);
-
-        // THEN
-        Assertions.assertNull(shipmentOption);
-    }
 }

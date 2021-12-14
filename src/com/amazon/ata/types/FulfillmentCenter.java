@@ -12,7 +12,7 @@ public class FulfillmentCenter {
     /**
      * The unique identifier code for a fulfillment center - 4-chars where first 3 are airport code for nearest city.
      */
-    private String fcCode;
+    private final String fcCode;
 
     /**
      * Instantiates a new FulfillmentCenter object.
@@ -24,13 +24,6 @@ public class FulfillmentCenter {
 
     public String getFcCode() {
         return fcCode;
-    }
-
-    @Override
-    public String toString() {
-        return "FulfillmentCenter{" +
-            "fcCode='" + fcCode + '\'' +
-            '}';
     }
 
     @Override

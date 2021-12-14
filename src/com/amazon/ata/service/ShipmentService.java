@@ -17,12 +17,12 @@ public class ShipmentService {
     /**
      * PackagingDAO is used to retrieve all valid shipment options for a given fulfillment center and item.
      */
-    private PackagingDAO packagingDAO;
+    private final PackagingDAO packagingDAO;
     
     /**
      * A CostStrategy used to calculate the relative cost of a ShipmentOption.
      */
-    private CostStrategy costStrategy;
+    private final CostStrategy costStrategy;
 
     /**
      * Instantiates a new ShipmentService object.
@@ -41,43 +41,20 @@ public class ShipmentService {
      * @return the lowest cost shipment option for the item and fulfillment center, or null if none found
      */
     public ShipmentOption findShipmentOption(final Item item,
-                                             final FulfillmentCenter fulfillmentCenter) throws RuntimeException {
+                                             final FulfillmentCenter fulfillmentCenter) {
+
+        List<ShipmentCost> sortOps = new ArrayList<>();
+
         try {
-            List<ShipmentOption> opts = Collections.singletonList(getLowestCostShipmentOption(packagingDAO
-                    .findShipmentOptions(item, fulfillmentCenter)
-                    .stream()
-                    .takeWhile(Objects::nonNull)
-                    .collect(Collectors.toList())));
-
-            return getLowestCostShipmentOption(opts);
-
+            packagingDAO.findShipmentOptions(item, fulfillmentCenter).forEach(shipmentOption ->
+                    sortOps.add(costStrategy.getCost(shipmentOption)));
         } catch (RuntimeException | NoPackagingFitsItemException | UnknownFulfillmentCenterException e) {
             e.getCause();
         }
 
-        return null;
+        Collections.sort(sortOps);
+
+        return sortOps.get(0).getShipmentOption();
     }
 
-
-    private ShipmentOption getLowestCostShipmentOption(List<ShipmentOption> results) {
-        List<ShipmentCost> shipmentCosts = applyCostStrategy(results);
-        Collections.sort(shipmentCosts);
-        return shipmentCosts.get(0).getShipmentOption();
-    }
-    
-    private List<ShipmentCost> applyCostStrategy(List<ShipmentOption> results) {
-        List<ShipmentCost> shipmentCosts = new ArrayList<>();
-        for (ShipmentOption option : results) {
-            shipmentCosts.add(costStrategy.getCost(option));
-        }
-        return shipmentCosts;
-    }
-    
-    @Override
-    public String toString() {
-        return "ShipmentService{" +
-                "packagingDAO=" + packagingDAO +
-                ", costStrategy=" + costStrategy +
-                '}';
-    }
 }

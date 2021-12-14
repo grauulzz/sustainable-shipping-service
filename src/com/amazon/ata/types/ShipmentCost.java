@@ -7,8 +7,8 @@ import java.util.Objects;
  * The cost associated with a particular ShipmentOption as calculated by a specific strategy.
  */
 public class ShipmentCost implements Comparable<ShipmentCost> {
-    private ShipmentOption shipmentOption;
-    private BigDecimal cost;
+    private final ShipmentOption shipmentOption;
+    private final BigDecimal cost;
 
     /**
      * Initializes a ShipmentCost object.
@@ -39,9 +39,6 @@ public class ShipmentCost implements Comparable<ShipmentCost> {
         }
 
         ShipmentCost other = (ShipmentCost) o;
-        // Using compareTo due to BigDecimal's equal's method not returning true if the scales of the BigDecimals are
-        // different. The compareTo returns zero if the values are the same, and ignores scale. This will make
-        // ShipmentCost#equals consistent with ShipmentCost#compareTo
         return cost.compareTo(other.cost) == 0;
     }
 

@@ -20,17 +20,17 @@ public class Item {
     /**
      * The length of the item, in centimeters.
      */
-    private BigDecimal length;
+    private final BigDecimal length;
 
     /**
      * The shortest dimension of the item, in centimeters.
      */
-    private BigDecimal width;
+    private final BigDecimal width;
 
     /**
      * The longest dimension of the item, in centimeters.
      */
-    private BigDecimal height;
+    private final BigDecimal height;
 
     private Item(Builder builder) {
         asin = builder.asin;
@@ -38,17 +38,6 @@ public class Item {
         length = builder.length;
         width = builder.width;
         height = builder.height;
-    }
-
-    @Override
-    public String toString() {
-        return "Item{" +
-            "asin='" + asin + '\'' +
-            ", description='" + description + '\'' +
-            ", length=" + length +
-            ", width=" + width +
-            ", height=" + height +
-            '}';
     }
 
     /**
@@ -60,13 +49,6 @@ public class Item {
         return new Builder();
     }
 
-    public String getAsin() {
-        return asin;
-    }
-
-    public String getDescription() {
-        return description;
-    }
 
     public BigDecimal getLength() {
         return length;

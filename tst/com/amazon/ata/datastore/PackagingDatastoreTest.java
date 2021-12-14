@@ -24,11 +24,12 @@ class PackagingDatastoreTest {
     Packaging package10Cm_2 = new PolyBag(Material.LAMINATED_PLASTIC,
             BigDecimal.valueOf(10), BigDecimal.valueOf(10), BigDecimal.valueOf(10));
 
-    Packaging package20Cm = new Box(Material.CORRUGATE,
-            BigDecimal.valueOf(20), BigDecimal.valueOf(20), BigDecimal.valueOf(20));
-    
     Packaging package20Cm_2 = new PolyBag(Material.LAMINATED_PLASTIC,
             BigDecimal.valueOf(20), BigDecimal.valueOf(20), BigDecimal.valueOf(20));
+
+    Packaging package20Cm = new Box(Material.CORRUGATE,
+            BigDecimal.valueOf(20), BigDecimal.valueOf(20), BigDecimal.valueOf(20));
+
 
     Packaging package40Cm = new Box(Material.CORRUGATE,
             BigDecimal.valueOf(40), BigDecimal.valueOf(40), BigDecimal.valueOf(40));
@@ -69,4 +70,27 @@ class PackagingDatastoreTest {
         }
         assertTrue(true, "getFcPackagingOptions contained all of the expected options.");
     }
+
+    @Test
+    public void createPackingOptions_callsCorrectPacking_returnsInstanceOfPolyBag() {
+        PackagingDatastore pd = new PackagingDatastore();
+
+        FcPackagingOption polyPackaging = pd.createFcPackagingOption(ind1.getFcCode(), Material.LAMINATED_PLASTIC,
+                new BigDecimal("10").toString(), new BigDecimal("10").toString(),
+                new BigDecimal("10").toString());
+
+        assertEquals(polyPackaging.getPackaging().getClass(), PolyBag.class);
+    }
+
+    @Test
+    public void createPackingOptions_callsCorrectPacking_returnsInstanceOfBox() {
+        PackagingDatastore pd = new PackagingDatastore();
+
+        FcPackagingOption boxPackaging = pd.createFcPackagingOption(ind1.getFcCode(), Material.CORRUGATE,
+                new BigDecimal("10").toString(), new BigDecimal("10").toString(),
+                new BigDecimal("10").toString());
+
+        assertEquals(boxPackaging.getPackaging().getClass(), Box.class);
+    }
+
 }

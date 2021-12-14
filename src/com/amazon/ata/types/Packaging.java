@@ -48,12 +48,6 @@ public class Packaging {
     public BigDecimal getMass() {
         return BigDecimal.ONE;
     }
-    
-    @Override
-    public String toString() {
-        return "Packaging{" +
-                "material=" + material +
-                '}';
-    }
+
 }
 

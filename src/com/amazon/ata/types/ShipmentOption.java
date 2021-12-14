@@ -9,17 +9,17 @@ public class ShipmentOption {
     /**
      * The item to ship.
      */
-    private Item item;
+    private final Item item;
 
     /**
      * The packaging option used.
      */
-    private Packaging packaging;
+    private final Packaging packaging;
 
     /**
      * The fulfillment center shipping the item.
      */
-    private FulfillmentCenter fulfillmentCenter;
+    private final FulfillmentCenter fulfillmentCenter;
 
     private ShipmentOption(Builder builder) {
         item = builder.item;
@@ -123,15 +123,6 @@ public class ShipmentOption {
         public ShipmentOption build() {
             return new ShipmentOption(this);
         }
-    }
-
-    @Override
-    public String toString() {
-        return "ShipmentOption{" +
-                "item=" + item +
-                ", packaging=" + packaging +
-                ", fulfillmentCenter=" + fulfillmentCenter +
-                '}';
     }
 }
 

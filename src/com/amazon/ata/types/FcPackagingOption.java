@@ -10,12 +10,12 @@ public class FcPackagingOption {
     /**
      * The fulfillment center we are providing packaging information about.
      */
-    private FulfillmentCenter fulfillmentCenter;
+    private final FulfillmentCenter fulfillmentCenter;
 
     /**
      * A packaging that is available at the fulfillment center.
      */
-    private Packaging packaging;
+    private final Packaging packaging;
 
 
     /**
@@ -62,12 +62,5 @@ public class FcPackagingOption {
     public int hashCode() {
         return Objects.hash(getFulfillmentCenter().hashCode(), getPackaging().hashCode());
     }
-    
-    @Override
-    public String toString() {
-        return "FcPackagingOption{" +
-                "fulfillmentCenter=" + fulfillmentCenter +
-                ", packaging=" + packaging +
-                '}';
-    }
+
 }

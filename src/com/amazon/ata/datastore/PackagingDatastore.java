@@ -39,7 +39,7 @@ public class PackagingDatastore {
     /**
      * Create fulfillment center packaging option from provided parameters.
      */
-    private FcPackagingOption createFcPackagingOption(String fcCode, Material material,
+    public FcPackagingOption createFcPackagingOption(String fcCode, Material material,
                                                       String length, String width, String height) {
         
         FulfillmentCenter fulfillmentCenter = new FulfillmentCenter(fcCode);

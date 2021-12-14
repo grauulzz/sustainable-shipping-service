@@ -6,10 +6,9 @@ import java.util.Objects;
 
 public class Box extends Packaging {
     
-    private BigDecimal volume;
-    private BigDecimal length;
-    private BigDecimal width;
-    private BigDecimal height;
+    private final BigDecimal length;
+    private final BigDecimal width;
+    private final BigDecimal height;
     
     
     /**
@@ -26,17 +25,7 @@ public class Box extends Packaging {
         this.width = width;
         this.height = height;
     }
-    
-    /**
-     * Instantiates a new Box.
-     *
-     * @param material the material
-     * @param volume   the volume
-     */
-    public Box(Material material, BigDecimal volume) {
-        super(material);
-        this.volume = volume;
-    }
+
     
     @Override
     public boolean canFitItem(Item item) {
@@ -78,11 +67,11 @@ public class Box extends Packaging {
     public BigDecimal getLength() {
         return length;
     }
-    
+
     public BigDecimal getWidth() {
         return width;
     }
-    
+
     public BigDecimal getHeight() {
         return height;
     }
