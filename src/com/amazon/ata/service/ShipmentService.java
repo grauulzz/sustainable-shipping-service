@@ -4,14 +4,12 @@ import com.amazon.ata.cost.CostStrategy;
 import com.amazon.ata.dao.PackagingDAO;
 import com.amazon.ata.exceptions.NoPackagingFitsItemException;
 import com.amazon.ata.exceptions.UnknownFulfillmentCenterException;
-import com.amazon.ata.types.FulfillmentCenter;
-import com.amazon.ata.types.Item;
-import com.amazon.ata.types.ShipmentCost;
-import com.amazon.ata.types.ShipmentOption;
+import com.amazon.ata.types.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -51,12 +49,27 @@ public class ShipmentService {
 
         List<ShipmentCost> sortOps = new ArrayList<>();
 
-        try {
-            packagingDAO.findShipmentOptions(item, fulfillmentCenter).forEach(shipmentOption ->
-                    sortOps.add(costStrategy.getCost(shipmentOption)));
-        } catch (RuntimeException | NoPackagingFitsItemException | UnknownFulfillmentCenterException e) {
-            e.getCause();
-        }
+        packagingDAO.getSetMap().forEach((key, value) -> {
+
+            try {
+                throw new UnknownFulfillmentCenterException("Unknown Fulfillment Center");
+            } catch (UnknownFulfillmentCenterException e){
+                e.printStackTrace();
+            }
+            new ArrayList<>(value).forEach(packaging -> {
+                try {
+                    packaging.canFitItem(item);
+                    throw new NoPackagingFitsItemException("No packaging found for item");
+                } catch (NoPackagingFitsItemException e) {
+                    e.printStackTrace();
+                }
+                sortOps.add(costStrategy.getCost(ShipmentOption.builder()
+                        .withItem(item)
+                        .withPackaging(packaging)
+                        .withFulfillmentCenter(fulfillmentCenter)
+                        .build()));
+            });
+        });
 
         Collections.sort(sortOps);
 
