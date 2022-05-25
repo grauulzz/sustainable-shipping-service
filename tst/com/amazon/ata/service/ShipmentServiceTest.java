@@ -18,7 +18,7 @@ import java.util.Optional;
 
 
 class ShipmentServiceTest {
-    
+
     @InjectMocks
     private Item smallItem = Item.builder()
             .withHeight(BigDecimal.valueOf(1))
@@ -26,7 +26,7 @@ class ShipmentServiceTest {
             .withLength(BigDecimal.valueOf(1))
             .withAsin("abcde")
             .build();
-    
+
     @InjectMocks
     private Item largeItem = Item.builder()
             .withHeight(BigDecimal.valueOf(1000))
@@ -34,11 +34,11 @@ class ShipmentServiceTest {
             .withLength(BigDecimal.valueOf(1000))
             .withAsin("12345")
             .build();
-    
+
     @InjectMocks
     private FulfillmentCenter existentFC = new FulfillmentCenter("ABE2");
-    private FulfillmentCenter nonExistentFC = new FulfillmentCenter("NonExistentFC");
-    
+    private final FulfillmentCenter nonExistentFC = new FulfillmentCenter("NonExistentFC");
+
     @InjectMocks
     private ShipmentService shipmentService = new ShipmentService(new PackagingDAO(new PackagingDatastore()),
             new MonetaryCostStrategy());
@@ -46,12 +46,6 @@ class ShipmentServiceTest {
     @Mock
     private PackagingDAO packagingDAO = new PackagingDAO(new PackagingDatastore());
 
-    @Test
-    public void nullFc_whenClientProvidesNullFc_throwsException()  {
-        Assertions.assertThrows(RuntimeException.class, () -> Optional
-                .ofNullable(shipmentService.findShipmentOption(smallItem, null))
-                .orElseThrow(RuntimeException::new));
-    }
 
     @Test
     void findBestShipmentOption_existentFCAndItemCanFit_returnsShipmentOption() {
@@ -62,18 +56,6 @@ class ShipmentServiceTest {
         Assertions.assertNotNull(shipmentOption);
     }
 
-    @Test
-    void findBestShipmentOption_existentFCAndItemCannotFit_returnsShipmentOption() {
-        // GIVEN & WHEN
-
-        Assertions.assertThrows(RuntimeException.class, () -> {
-            //Code under test
-            shipmentService.findShipmentOption(largeItem, existentFC);
-            shipmentService.findShipmentOption(smallItem, nonExistentFC);
-            shipmentService.findShipmentOption(largeItem, nonExistentFC);
-        });
-
-    }
 
 
 }

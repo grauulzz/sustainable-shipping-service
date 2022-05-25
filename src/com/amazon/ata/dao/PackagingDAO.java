@@ -18,8 +18,8 @@ public class PackagingDAO {
 
     private final Set<FcPackagingOption> packagingOptionsSet;
     private final Map<FulfillmentCenter, Set<Packaging>> setMap;
-    
-    
+
+
     /**
      * Instantiates a new Packaging dao.
      *
@@ -32,7 +32,7 @@ public class PackagingDAO {
                 .computeIfAbsent(k.getFulfillmentCenter(), v -> new HashSet<>())
                 .add(k.getPackaging()));
     }
-    
+
     /**
      * Find shipment options list.
      *
@@ -42,12 +42,12 @@ public class PackagingDAO {
      */
     public List<ShipmentOption> findShipmentOptions(Item item, FulfillmentCenter fulfillmentCenter)
             throws UnknownFulfillmentCenterException, NoPackagingFitsItemException {
-        
+
         List<ShipmentOption> result = new ArrayList<>();
         boolean fcFound = false;
 
         if (setMap.containsKey(fulfillmentCenter)) {
-            for (Map.Entry<FulfillmentCenter, HashSet<Packaging>> entry : setMap.entrySet()) {
+            for (Map.Entry<FulfillmentCenter, Set<Packaging>> entry : setMap.entrySet()) {
                 if (entry.getKey().equals(fulfillmentCenter)) {
                     fcFound = true;
                     entry.getValue().stream().filter(value -> value.canFitItem(item)).forEach(value -> {
@@ -68,7 +68,7 @@ public class PackagingDAO {
             throw new UnknownFulfillmentCenterException(
                     String.format("Unknown FC: %s!", fulfillmentCenter.getFcCode()));
         }
-        
+
         if (result.isEmpty()) {
             throw new NoPackagingFitsItemException(
                     String.format("No packaging at %s fits %s!", fulfillmentCenter.getFcCode(), item));
@@ -76,7 +76,7 @@ public class PackagingDAO {
 
         return result;
     }
-    
+
     public Map<FulfillmentCenter, Set<Packaging>> getSetMap() {
         return setMap;
     }
